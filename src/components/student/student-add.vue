@@ -43,7 +43,7 @@
         class="upload-demo"
         ref="upload"
         drag
-        action="https://school.fengniaotuangou.cn/import/students"
+        action="https://er.fengniaotuangou.cn/import/students"
         :data="classData"
         :on-remove="handleRemove"
         :file-list="fileList"

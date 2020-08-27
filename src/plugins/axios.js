@@ -24,14 +24,14 @@ const instance = axios.create({
 				Message.warning({
 					message: '授权失败，请重新登录'
 				})
-				setTimeout(() => {
-					localStorage.removeItem('username')
-					localStorage.removeItem('token')
-					localStorage.removeItem('role')
-					localStorage.removeItem('permissions')
-					window.location.reload()
-					this.$router.replace('/login')
-				}, 1000)
+				// setTimeout(() => {
+				// 	localStorage.removeItem('username')
+				// 	localStorage.removeItem('token')
+				// 	localStorage.removeItem('role')
+				// 	localStorage.removeItem('permissions')
+				// 	window.location.reload()
+				// 	this.$router.replace('/login')
+				// }, 1000)
 				return
 			case 403:
 				// Message.warning({
