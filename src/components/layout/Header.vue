@@ -100,8 +100,6 @@ export default {
         API.logout().then(res => {
           localStorage.removeItem("username");
           localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          localStorage.removeItem("permissions");
           window.location.reload();
           self.$router.replace("/login");
         });
@@ -130,8 +128,6 @@ export default {
       API.logout().then(res => {
         localStorage.removeItem("username");
         localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("permissions");
         window.location.reload();
         self.$router.replace("/login");
       });
