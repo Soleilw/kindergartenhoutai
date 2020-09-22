@@ -24,12 +24,9 @@
 					<el-form-item label="收费模式">
 						<el-input v-model="form.mode"></el-input>
 					</el-form-item>
-					<!-- 	<el-form-item label="用户名">
-						<el-input v-model="form.user.username"></el-input>
+					<el-form-item label="家长进校模式">
+						<el-input v-model="form.allow_parent_in"></el-input>
 					</el-form-item>
-					<el-form-item label="密码">
-						<el-input v-model="form.user.password"></el-input>
-          </el-form-item>-->
 					<div v-for="(item,index) in form.grades" :key="index">
 						<el-form-item label="年级选择">
 							<el-select v-model="item.title" placeholder="请选择年级" @change="gradeChange">
@@ -325,6 +322,7 @@
 					},
 					grades: [],
 					id: "",
+					allow_parent_in: 0
 				},
 				grade: [{
 						value: "小班",
@@ -453,6 +451,7 @@
 							password: "",
 						},
 						grades: [],
+						allow_parent_in: 0
 					};
 					self.$message.success("提交成功");
 					self.currentPage = 1;
@@ -474,6 +473,7 @@
 					},
 					grades: [],
 					id: row.id,
+					allow_parent_in: row.allow_parent_in
 				};
 			},
 			handleShowUser(index, row) {
@@ -614,6 +614,7 @@
 						password: "",
 					},
 					grades: [],
+					allow_parent_in: 0
 				};
 			},
 			// 年级操作
