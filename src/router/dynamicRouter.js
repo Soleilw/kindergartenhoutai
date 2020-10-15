@@ -67,6 +67,15 @@ const dynamicRouter = [{
         }
     },
     {
+        path: '/attendanceSystem',
+        name: 'attendanceSystem',
+        component: () => import('@/views/attendance-system/attendance-system.vue'),
+        meta: {
+            title: '考勤系统',
+            icon: 'el-icon-document-checked'
+        }
+    },
+    {
         path: '/school',
         name: 'school',
         component: () => import('@/views/school/school.vue'),

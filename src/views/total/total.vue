@@ -2,14 +2,19 @@
   <div class="box">
     <div class="handle-box">
       <div class="btn">
-        <el-button type="primary" @click="getTotal" v-if="isAdmin">全部</el-button>
+        <el-button
+          slot="append"
+          icon="el-icon-refresh"
+          @click="refresh"
+        ></el-button>
       </div>
-      <div class="btn">
-        <el-button type="primary" @click="getSclTotal" v-if="!isAdmin">全部</el-button>
-      </div>
-      <div class="btn" v-if="isAdmin">
+      <div class="btn" v-if="username == 'admin'">
         <span>学校：</span>
-        <el-select v-model="school" placeholder="请选择学校" @change="changeSchoolType">
+        <el-select
+          v-model="school"
+          placeholder="请选择学校"
+          @change="changeSchoolType"
+        >
           <el-option
             v-for="item in schoolList"
             :key="item.index"
@@ -18,9 +23,13 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="btn" v-if="isAdmin">
+      <div class="btn" v-if="username == 'admin'">
         <span>年级：</span>
-        <el-select v-model="grade" placeholder="请选择年级" @change="changeGradeType">
+        <el-select
+          v-model="grade"
+          placeholder="请选择年级"
+          @change="changeGradeType"
+        >
           <el-option
             v-for="item in gradeList"
             :key="item.index"
@@ -29,9 +38,13 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="btn" v-if="!isAdmin">
+      <div class="btn" v-if="username !== 'admin'">
         <span>年级：</span>
-        <el-select v-model="grade" placeholder="请选择年级" @change="changeSclGradeType">
+        <el-select
+          v-model="grade"
+          placeholder="请选择年级"
+          @change="changeGradeType"
+        >
           <el-option
             v-for="item in gradeList"
             :key="item.index"
@@ -57,6 +70,7 @@ require("echarts");
 
 export default {
   name: "studentsTatal",
+  inject: ["reload"],
 
   data() {
     return {
@@ -135,6 +149,10 @@ export default {
   },
 
   methods: {
+    // 刷新
+    refresh() {
+      this.reload();
+    },
     changeSchoolType(value) {
       var self = this;
       var barChartDom = document.getElementById("bar-chart");
@@ -242,170 +260,157 @@ export default {
       self.nameList = [];
       self.countList = [];
       self.existCount = [];
-      API.statistics(self.school_id, self.grade_id).then((res) => {
-        res.data.forEach((item) => {
-          self.nameList.push(item.name);
-          self.countList.push(item.count);
-          self.existCount.push(item.exist_count);
-        });
-        barChart.setOption(
-          (self.bar = {
-            xAxis: {
-              data: self.nameList,
-            },
-            series: [
-              {
-                name: "总学生数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
-                },
-                data: self.countList,
-              },
-              {
-                name: "已注册人数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
-                },
-                data: self.existCount,
-              },
-            ],
-          })
-        );
-        API.studentGender(0, 1, self.school_id, self.grade_id).then((res) => {
-          pieUserChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.user,
-                left: "center",
+      if (self.username == "admin") {
+        API.statistics(self.school_id, self.grade_id).then((res) => {
+          res.data.forEach((item) => {
+            self.nameList.push(item.name);
+            self.countList.push(item.count);
+            self.existCount.push(item.exist_count);
+          });
+          barChart.setOption(
+            (self.bar = {
+              xAxis: {
+                data: self.nameList,
               },
               series: [
                 {
-                  name: self.title.user,
-
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
+                  name: "总学生数",
+                  type: "bar",
+                  label: {
+                    show: true,
+                    position: "inside",
+                  },
+                  data: self.countList,
+                },
+                {
+                  name: "已注册人数",
+                  type: "bar",
+                  label: {
+                    show: true,
+                    position: "inside",
+                  },
+                  data: self.existCount,
                 },
               ],
             })
           );
+          API.studentGender(0, 1, self.school_id, self.grade_id).then((res) => {
+            pieUserChart.setOption(
+              (self.pie = {
+                title: {
+                  text: self.title.user,
+                  left: "center",
+                },
+                series: [
+                  {
+                    name: self.title.user,
+
+                    data: [
+                      { value: res.man_total, name: "男生人数" },
+                      { value: res.woman_total, name: "女生人数" },
+                    ],
+                  },
+                ],
+              })
+            );
+          });
+          API.studentGender(0, 2, self.school_id, self.grade_id).then((res) => {
+            pieStudentChart.setOption(
+              (self.pie = {
+                title: {
+                  text: self.title.student,
+                  left: "center",
+                },
+                series: [
+                  {
+                    name: self.title.student,
+
+                    data: [
+                      { value: res.man_total, name: "男生人数" },
+                      { value: res.woman_total, name: "女生人数" },
+                    ],
+                  },
+                ],
+              })
+            );
+          });
         });
-        API.studentGender(0, 2, self.school_id, self.grade_id).then((res) => {
-          pieStudentChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.student,
-                left: "center",
+      } else {
+        API.statistics(0, self.grade_id).then((res) => {
+          res.data.forEach((item) => {
+            self.nameList.push(item.name);
+            self.countList.push(item.count);
+            self.existCount.push(item.exist_count);
+          });
+          barChart.setOption(
+            (self.bar = {
+              xAxis: {
+                data: self.nameList,
               },
               series: [
                 {
-                  name: self.title.student,
-
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
+                  name: "总学生数",
+                  type: "bar",
+                  label: {
+                    show: true,
+                    position: "inside",
+                  },
+                  data: self.countList,
+                },
+                {
+                  name: "已注册人数",
+                  type: "bar",
+                  label: {
+                    show: true,
+                    position: "inside",
+                  },
+                  data: self.existCount,
                 },
               ],
             })
           );
-        });
-      });
-    },
-    changeSclGradeType(value) {
-      var self = this;
-      var barChartDom = document.getElementById("bar-chart");
-      var pieCharUsertDom = document.getElementById("pie-chart-user");
-      var pieCharStudenttDom = document.getElementById("pie-chart-student");
-      var barChart = require("echarts").init(barChartDom);
-      var pieUserChart = require("echarts").init(pieCharUsertDom);
-      var pieStudentChart = require("echarts").init(pieCharStudenttDom);
-      barChart.setOption(self.bar);
-      pieUserChart.setOption(self.pie);
-      pieStudentChart.setOption(self.pie);
-      self.grade_id = value;
-      self.nameList = [];
-      self.countList = [];
-      self.existCount = [];
-      API.statistics(0, self.grade_id).then((res) => {
-        res.data.forEach((item) => {
-          self.nameList.push(item.name);
-          self.countList.push(item.count);
-          self.existCount.push(item.exist_count);
-        });
-        barChart.setOption(
-          (self.bar = {
-            xAxis: {
-              data: self.nameList,
-            },
-            series: [
-              {
-                name: "总学生数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
+          API.studentGender(0, 1, 0, self.grade_id).then((res) => {
+            pieUserChart.setOption(
+              (self.pie = {
+                title: {
+                  text: self.title.user,
+                  left: "center",
                 },
-                data: self.countList,
-              },
-              {
-                name: "已注册人数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
-                },
-                data: self.existCount,
-              },
-            ],
-          })
-        );
-        API.studentGender(0, 1, 0, self.grade_id).then((res) => {
-          pieUserChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.user,
-                left: "center",
-              },
-              series: [
-                {
-                  name: self.title.user,
+                series: [
+                  {
+                    name: self.title.user,
 
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
+                    data: [
+                      { value: res.man_total, name: "男生人数" },
+                      { value: res.woman_total, name: "女生人数" },
+                    ],
+                  },
+                ],
+              })
+            );
+          });
+          API.studentGender(0, 2, 0, self.grade_id).then((res) => {
+            pieStudentChart.setOption(
+              (self.pie = {
+                title: {
+                  text: self.title.student,
+                  left: "center",
                 },
-              ],
-            })
-          );
-        });
-        API.studentGender(0, 2, 0, self.grade_id).then((res) => {
-          pieStudentChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.student,
-                left: "center",
-              },
-              series: [
-                {
-                  name: self.title.student,
+                series: [
+                  {
+                    name: self.title.student,
 
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
-                },
-              ],
-            })
-          );
+                    data: [
+                      { value: res.man_total, name: "男生人数" },
+                      { value: res.woman_total, name: "女生人数" },
+                    ],
+                  },
+                ],
+              })
+            );
+          });
         });
-      });
+      }
     },
 
     // 总后台
@@ -427,6 +432,15 @@ export default {
       self.school = "";
       self.grade = "";
       self.isAdmin = true;
+      if (self.username == "admin") {
+        API.schools(1, 1000).then((res) => {
+          self.schoolList = res.data;
+        });
+      } else {
+        API.grades().then((res) => {
+          self.gradeList = res.data;
+        });
+      }
       API.statistics().then((res) => {
         res.data.forEach((item) => {
           self.nameList.push(item.name);
@@ -502,115 +516,13 @@ export default {
           })
         );
       });
-      API.schools().then((res) => {
-        self.schoolList = res.data;
-      });
+      
     },
 
-    // 学校
-    getSclTotal() {
-      var self = this;
-      self.isAdmin = false;
-      var barChartDom = document.getElementById("bar-chart");
-      var pieCharUsertDom = document.getElementById("pie-chart-user");
-      var pieCharStudenttDom = document.getElementById("pie-chart-student");
-      var barChart = require("echarts").init(barChartDom);
-      var pieUserChart = require("echarts").init(pieCharUsertDom);
-      var pieStudentChart = require("echarts").init(pieCharStudenttDom);
-      barChart.setOption(self.bar);
-      pieUserChart.setOption(self.pie);
-      pieStudentChart.setOption(self.pie);
-      self.nameList = [];
-      self.countList = [];
-      self.existCount = [];
-      self.school = "";
-      self.grade = "";
-      API.grades().then((res) => {
-        self.gradeList = res.data;
-      });
-      API.statistics().then((res) => {
-        res.data.forEach((item) => {
-          self.nameList.push(item.name);
-          self.countList.push(item.count);
-          self.existCount.push(item.exist_count);
-        });
-        barChart.setOption(
-          (self.bar = {
-            xAxis: {
-              data: self.nameList,
-            },
-            series: [
-              {
-                name: "总学生数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
-                },
-                data: self.countList,
-              },
-              {
-                name: "已注册人数",
-                type: "bar",
-                label: {
-                  show: true,
-                  position: "inside",
-                },
-                data: self.existCount,
-              },
-            ],
-          })
-        );
-        API.studentGender(0, 1).then((res) => {
-          pieUserChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.user,
-                left: "center",
-              },
-              series: [
-                {
-                  name: self.title.user,
-
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
-                },
-              ],
-            })
-          );
-        });
-        API.studentGender(0, 2).then((res) => {
-          pieStudentChart.setOption(
-            (self.pie = {
-              title: {
-                text: self.title.student,
-                left: "center",
-              },
-              series: [
-                {
-                  name: self.title.student,
-
-                  data: [
-                    { value: res.man_total, name: "男生人数" },
-                    { value: res.woman_total, name: "女生人数" },
-                  ],
-                },
-              ],
-            })
-          );
-        });
-      });
-    },
   },
 
   mounted() {
-    if (this.username == "admin") {
-      this.getTotal();
-    } else {
-      this.getSclTotal();
-    }
+    this.getTotal();
   },
 };
 </script>
