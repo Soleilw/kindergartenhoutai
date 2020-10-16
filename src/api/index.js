@@ -566,4 +566,9 @@ API.jurisdictionSchool = function(user_id, mode) {
 		})
 	}
 
+	// 更换家长人脸
+	API.updateFace = function(data) {
+		return axios.post(url.UpdateFace, data)
+	}
+
 export default API

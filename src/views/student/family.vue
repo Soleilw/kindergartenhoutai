@@ -17,29 +17,78 @@
       </div>
     </div>
 
-    <el-table :data="tableData" border :header-cell-style="{background:'#f0f0f0'}">
+    <el-table
+      :data="tableData"
+      border
+      :header-cell-style="{ background: '#f0f0f0' }"
+    >
       <el-table-column prop="student.number" label="学号"></el-table-column>
       <el-table-column prop="student.name" label="学生姓名"></el-table-column>
       <el-table-column prop="UserInfo.name" label="家长姓名"></el-table-column>
-      <el-table-column prop="UserInfo.phone" label="家长手机号"></el-table-column>
-      <el-table-column prop="WxUser.nickname" label="家长微信名" width="200px"></el-table-column>
+      <el-table-column prop="UserInfo.href" label="家长人脸信息">
+        <template slot-scope="scope">
+          <el-popover placement="top-start" title="" trigger="click">
+            <img
+              :src="scope.row.UserInfo.href"
+              style="max-width: 800px; max-height: 800px"
+            />
+            <img
+              slot="reference"
+              :src="scope.row.UserInfo.href"
+              style="max-width: 180px; max-height: 80px"
+            />
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="UserInfo.phone"
+        label="家长手机号"
+      ></el-table-column>
+      <el-table-column
+        prop="WxUser.nickname"
+        label="家长微信名"
+        width="200px"
+      ></el-table-column>
       <el-table-column prop="remark" label="备注"></el-table-column>
       <el-table-column prop="master" label="家长性质">
         <template slot-scope="scope">
-          <span v-text="scope.row.master === 1 ? '默认家长' : '家庭成员' "></span>
+          <span
+            v-text="scope.row.master === 1 ? '默认家长' : '家庭成员'"
+          ></span>
         </template>
       </el-table-column>
-      <el-table-column prop="updated_at" label="更新时间" width="150px"></el-table-column>
+      <el-table-column
+        prop="updated_at"
+        label="更新时间"
+        width="150px"
+      ></el-table-column>
       <el-table-column label="操作" width="400px">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleMore(scope.$index, scope.row)">查看更多</el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleMore(scope.$index, scope.row)"
+            >查看更多</el-button
+          >
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleFace(scope.$index, scope.row)"
+            >更换人脸</el-button
+          >
           <el-button
             v-if="scope.row.master != 1"
             size="mini"
             type="primary"
             @click="handleFamilyChange(scope.$index, scope.row)"
-          >更换默认家长</el-button>
-          <el-button size="mini" type="danger" @click="handleDel(scope.$index, scope.row)">解除关系</el-button>
+            >更换默认家长</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDel(scope.$index, scope.row)"
+            >解除关系</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -63,10 +112,12 @@
       align="center"
       :close-on-click-modal="false"
     >
-      <div style="font-size: 20px; margin-bottom: 30px;">是否更换为默认家长</div>
+      <div style="font-size: 20px; margin-bottom: 30px">是否更换为默认家长</div>
       <span>
         <el-button type="primary" @click="toChange">更换</el-button>
-        <el-button type="danger" @click="dialogFamilyChange = false">取消</el-button>
+        <el-button type="danger" @click="dialogFamilyChange = false"
+          >取消</el-button
+        >
       </span>
     </el-dialog>
 
@@ -77,14 +128,19 @@
       align="center"
       :close-on-click-modal="false"
     >
-      <div style="font-size: 20px; margin-bottom: 30px;">是否解除关系</div>
+      <div style="font-size: 20px; margin-bottom: 30px">是否解除关系</div>
       <span>
         <el-button type="primary" @click="toDel">解除</el-button>
         <el-button type="danger" @click="dialogDel = false">取消</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="学生家庭成员列表" :visible.sync="dialogFamily" width="90%" align="center">
+    <el-dialog
+      title="学生家庭成员列表"
+      :visible.sync="dialogFamily"
+      width="90%"
+      align="center"
+    >
       <table border="1" width="1000px" class="table" :model="studentList">
         <tr class="trHeight">
           <td rowspan="2" width="150px">学生信息</td>
@@ -95,11 +151,11 @@
           <td class="bgcolor" width="150px">班级</td>
         </tr>
         <tr>
-          <td>{{studentList.number}}</td>
-          <td>{{studentList.name}}</td>
-          <td>{{studentList.sex === 1 ? '男' : '女'}}</td>
-          <td>{{studentList.age}}</td>
-          <td>{{studentList.class}}</td>
+          <td>{{ studentList.number }}</td>
+          <td>{{ studentList.name }}</td>
+          <td>{{ studentList.sex === 1 ? "男" : "女" }}</td>
+          <td>{{ studentList.age }}</td>
+          <td>{{ studentList.class }}</td>
         </tr>
       </table>
       <table border="1" width="1000px" class="table" :model="tableList">
@@ -114,41 +170,78 @@
           <td class="bgcolor" width="300px">地址</td>
         </tr>
         <tr>
-          <td>{{tableList.id}}</td>
-          <td>{{tableList.name}}</td>
-          <td>{{tableList.sex === 1 ? '男' : '女'}}</td>
-          <td>{{tableList.phone}}</td>
-          <td>{{tableList.id_card === 'NONE' ? '无' : tableList.id_card}}</td>
-          <td style="text-align: start;padding: 5px;">{{tableList.address}}</td>
+          <td>{{ tableList.id }}</td>
+          <td>{{ tableList.name }}</td>
+          <td>{{ tableList.sex === 1 ? "男" : "女" }}</td>
+          <td>{{ tableList.phone }}</td>
+          <td>{{ tableList.id_card === "NONE" ? "无" : tableList.id_card }}</td>
+          <td style="text-align: start; padding: 5px">
+            {{ tableList.address }}
+          </td>
         </tr>
       </table>
-      <!-- 			<div v-for="(item,index) in tableList" :key="index">
-				<table border="1" width="1300px" class="table">
-					<tr class="trHeight">
-						<td rowspan='2'>家长信息</td>
-						<td class="bgcolor">家长ID</td>
-						<td class="bgcolor">家长名称</td>
-						<td class="bgcolor">性别</td>
-						<td class="bgcolor">电话</td>
-						<td class="bgcolor">身份证</td>
-						<td class="bgcolor">地址</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-				</table>
-      </div>-->
+    </el-dialog>
+
+    <el-dialog
+      title="更换人脸"
+      :visible.sync="dialogFace"
+      :close-on-click-modal="false"
+      width="500px"
+    >
+      <div class="box">
+        <el-form :model="familyForm">
+          <div class="tips">
+            <p><span>提示：</span>更换后的人脸照片会覆盖掉原有的人脸照片！</p>
+          </div>
+          <el-form-item label="更换人脸图片">
+            <el-upload
+              action="https://api.fengniaotuangou.cn/api/upload"
+              ref="upload"
+              :limit="1"
+              :before-upload="beforeAvatarUpload"
+              :auto-upload="false"
+              :on-success="handleAvatarSuccess"
+              :on-remove="handleRemove"
+              :on-exceed="handleExceed"
+              :on-change="handleChange"
+            >
+              <el-button size="small" type="primary">选择图片</el-button>
+            </el-upload>
+            <div v-if="hasNewImage" style="color: red; font-size: 12px">
+              * 点击文件名可删除所选图片
+            </div>
+
+            <div class="up-img" v-if="old_href">
+              <span style="display: flex; justify-items: center; color: #409eff"
+                >原人脸图片</span
+              >
+              <img class="pic-box" :src="old_href" />
+            </div>
+            <div class="up-img" v-if="familyForm.href">
+              <span style="display: flex; justify-items: center; color: #67c23a"
+                >新人脸图片</span
+              >
+              <img class="pic-box" :src="familyForm.href" />
+            </div>
+            <div class="up-img" v-else>
+              <img class="pic-box" :src="change_href" />
+            </div>
+          </el-form-item>
+          <div class="submit">
+            <el-form-item>
+              <el-button type="primary" @click="changeFace">提交</el-button>
+            </el-form-item>
+          </div>
+        </el-form>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import API from "@/api/index.js";
+import md5 from "blueimp-md5";
+
 export default {
   name: "family",
   inject: ["reload"],
@@ -174,6 +267,22 @@ export default {
       pageSize: 10,
       permissions: localStorage.getItem("permissions"),
       role: localStorage.getItem("role"),
+      imgData: {
+        key: "",
+        token: "",
+      },
+      fileName: "",
+      suffix: "",
+      qiniuaddr: "https://tu.fengniaotuangou.cn", // 七牛云图片外链地址
+      familyForm: {
+        href: "",
+        user_id: "",
+      },
+      old_href: "", // 原人脸图片
+      change_href: "",
+      hasNewImage: false,
+      new_file: "",
+      dialogFace: false,
     };
   },
   mounted() {
@@ -257,11 +366,6 @@ export default {
       this.reload();
     },
 
-    // 返回得数据有多个家长信息，推入一个表格
-    // getMoreInfo() {
-    // 	this.familyList.push({})
-    // },
-
     // 分页
     handleCurrentChange(val) {
       var self = this;
@@ -293,6 +397,92 @@ export default {
         });
       }
     },
+
+    // 更换人脸
+    handleFace(index, row) {
+      var self = this;
+      console.log(row);
+      if (row.UserInfo.worker == 0) {
+        self.dialogFace = true;
+      } else {
+          self.$message.warning("改用户无法修改人脸");
+      }
+      self.familyForm.user_id = row.user_id;
+      // self.familyForm.only_in = row.only_in;
+      self.old_href = row.UserInfo.href;
+    },
+
+    // 人脸信息
+    handleChange(file) {
+      var self = this;
+      console.log(file);
+      self.change_href = URL.createObjectURL(file.raw);
+      self.hasNewImage = true;
+    },
+    handleRemove(file) {
+      var self = this;
+      self.change_href = "";
+      self.hasNewImage = false;
+    },
+    beforeAvatarUpload(file) {
+      var self = this;
+      // self.familyForm.href = file.name;
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("上传图片大小不能超过 2MB!");
+      }
+      return isLt2M;
+    },
+    changeFace() {
+      var self = this;
+      if (self.change_href === "") {
+        API.updateFace(self.familyForm).then((res) => {
+          self.$message.success("上传成功");
+          self.currentPage = 1;
+          self.getFamily();
+          self.familyForm.href = "";
+          self.dialogFace = false;
+        });
+      } else {
+        this.$refs.upload.submit();
+      }
+    },
+    handleAvatarSuccess(res, file) {
+      var self = this;
+      console.log(111, res);
+      file.url = `${res.data}`;
+      self.familyForm.href = file.url;
+      API.updateFace(self.familyForm).then((res) => {
+        self.$message.success("上传成功");
+        self.currentPage = 1;
+        self.getFamily();
+        self.$refs.upload.clearFiles();
+        self.familyForm.href = "";
+        self.change_href = "";
+        self.old_href = "";
+        self.imgData.key = "";
+        self.familyForm.user_id = "";
+        self.dialogFace = false;
+      });
+    },
+    handleExceed(file, fileList) {
+      //图片上传超过数量限制
+      var self = this;
+      self.$message.error("上传图片不能超过1张!重新上传");
+      self.$refs.upload.clearFiles();
+      self.familyForm.href = "";
+      self.imgData.key = "";
+      self.familyForm.user_id = "";
+    },
+
+    getQiniuToken() {
+      var self = this;
+      axios
+        .get("https://api.fengniaotuangou.cn/api/upload/token")
+        .then((res) => {
+          self.imgData.token = res.data.uptoken;
+        });
+    },
   },
 };
 </script>
@@ -311,6 +501,25 @@ export default {
 
 .table .trHeight {
   height: 40px;
+}
+
+.upload-btn {
+  margin-top: 10px;
+}
+
+.up-img {
+  display: inline-block;
+  margin: 0 50px;
+}
+
+.pic-box {
+  max-width: 100%;
+  height: 200px;
+}
+
+.tips {
+  margin-bottom: 20px;
+  color: red;
 }
 
 // .table td {

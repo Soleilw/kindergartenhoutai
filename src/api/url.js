@@ -1,4 +1,6 @@
 const BaseURL = "https://er.fengniaotuangou.cn"
+// const BaseURL = "http://192.168.0.104"
+
 
 const url = {
 	// 登录
@@ -55,6 +57,7 @@ const url = {
 	'StudentEditFace': BaseURL + '/student/editFace', // 手动更换人脸
 	'FamilySearch': BaseURL + '/parents', // 家长列表搜索学生
 	'StudentFaceLogs': BaseURL + '/student/face/logs', // 学生进出记录
+	'UpdateFace': BaseURL + '/update/face', // 更换家长人脸
 
 	'Exam': BaseURL + '/exam', // 新增考试场次, 删除考试
 	'Exams': BaseURL + '/exams', // 获取考试场次
