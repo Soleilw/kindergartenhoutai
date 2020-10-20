@@ -89,8 +89,8 @@
 			<el-table-column prop="updated_at" label="更新时间"></el-table-column>
 			<el-table-column label="操作" width="300px">
 				<template slot-scope="scope">
-					<el-button size="mini" type="success" @click="handleEdit(scope.$index,scope.row)">编辑服务</el-button>
-					<el-button size="mini" type="success" @click="handleOrder(scope.$index,scope.row)">服务订单</el-button>
+					<el-button size="mini" type="primary" @click="handleEdit(scope.$index,scope.row)">编辑服务</el-button>
+					<el-button size="mini" type="primary" @click="handleOrder(scope.$index,scope.row)">服务订单</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
