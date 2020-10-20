@@ -87,7 +87,7 @@
 								<el-button size="mini" type="primary" @click="handleFaceLogs(scope.$index, scope.row)">查看进出记录</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
-							<el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+							<el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
 								<el-button type="danger" size="mini" @click="handleDel(scope.$index, scope.row)">删除</el-button>

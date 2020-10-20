@@ -38,8 +38,8 @@
 						</el-form-item>
 					</div>
 					<el-form-item label="操作">
-						<el-button type="success" @click="addGrade">添加年级</el-button>
-						<el-button type="success" @click="delGrade">删除年级</el-button>
+						<el-button type="primary" @click="addGrade">添加年级</el-button>
+						<el-button type="primary" @click="delGrade">删除年级</el-button>
 					</el-form-item>
 					<div class="submit">
 						<el-form-item>
@@ -64,7 +64,7 @@
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item>
-								<el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+								<el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
 								<el-button size="mini" type="primary" @click="handleShowUser(scope.$index, scope.row)">查看用户</el-button>

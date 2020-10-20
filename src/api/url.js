@@ -106,6 +106,10 @@ const url = {
 	'StudentGender': BaseURL + '/student/gender', // 男女比例统计
 	'ClassCheckCount': BaseURL + '/class/check/count', // 班级审核人数统计
 	'Statistics': BaseURL + '/statistics', // 统计详情
+	
+	// 签到
+	'Sign': BaseURL + '/sign/statistics', // 获取签到列表
+	'Signs': BaseURL + '/signs', // 获取签到列表
 }
 
 module.exports = url;

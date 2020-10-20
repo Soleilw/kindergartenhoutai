@@ -3,17 +3,22 @@
     <div class="handle-box">
       <div class="btn">
         <el-input
-          v-model="number"
           placeholder="输入学生学号"
-          class="search"
+          v-model="number"
           @keyup.enter.native="search(number)"
-        ></el-input>
-      </div>
-      <div class="btn">
-        <el-button type="primary" @click="search(number)">搜索</el-button>
-      </div>
-      <div class="btn">
-        <el-button type="primary" @click="refresh">刷新页面</el-button>
+          class="input-with-select"
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="search(number)"
+          ></el-button>
+          <el-button
+            slot="append"
+            icon="el-icon-refresh"
+            @click="refresh"
+          ></el-button>
+        </el-input>
       </div>
     </div>
 
@@ -405,7 +410,7 @@ export default {
       if (row.UserInfo.worker == 0) {
         self.dialogFace = true;
       } else {
-          self.$message.warning("改用户无法修改人脸");
+        self.$message.warning("改用户无法修改人脸");
       }
       self.familyForm.user_id = row.user_id;
       // self.familyForm.only_in = row.only_in;

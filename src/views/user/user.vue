@@ -104,10 +104,10 @@
             </el-form-item>
           </div>
           <el-form-item label="操作">
-            <el-button type="success" @click="addopenPermissionForm"
+            <el-button type="primary" @click="addopenPermissionForm"
               >添加</el-button
             >
-            <el-button type="success" @click="delopenPermissionForm"
+            <el-button type="primary" @click="delopenPermissionForm"
               >删除</el-button
             >
           </el-form-item>
