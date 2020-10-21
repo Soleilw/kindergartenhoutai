@@ -37,7 +37,7 @@
       </div>
     </el-dialog>
 
-    <el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}">
+    <el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
       <el-table-column label="名称" type="selection"></el-table-column>
       <el-table-column prop="id" label="分类ID"></el-table-column>
       <el-table-column prop="title" label="分类标题"></el-table-column>

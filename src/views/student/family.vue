@@ -26,6 +26,7 @@
       :data="tableData"
       border
       :header-cell-style="{ background: '#f0f0f0' }"
+      max-height="620"
     >
       <el-table-column prop="student.number" label="学号"></el-table-column>
       <el-table-column prop="student.name" label="学生姓名"></el-table-column>
@@ -62,38 +63,49 @@
           ></span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="updated_at"
-        label="更新时间"
-        width="150px"
-      ></el-table-column>
-      <el-table-column label="操作" width="400px">
+      <el-table-column prop="updated_at" label="更新时间"></el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleMore(scope.$index, scope.row)"
-            >查看更多</el-button
-          >
-          <el-button
-            size="mini"
-            type="primary"
-            @click="handleFace(scope.$index, scope.row)"
-            >更换人脸</el-button
-          >
-          <el-button
-            v-if="scope.row.master != 1"
-            size="mini"
-            type="primary"
-            @click="handleFamilyChange(scope.$index, scope.row)"
-            >更换默认家长</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDel(scope.$index, scope.row)"
-            >解除关系</el-button
-          >
+          <el-dropdown>
+            <el-button type="primary">
+              操作<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="handleMore(scope.$index, scope.row)"
+                  >查看更多</el-button
+                >
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="handleFace(scope.$index, scope.row)"
+                  >更换人脸</el-button
+                >
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  v-if="scope.row.master != 1"
+                  @click="handleFamilyChange(scope.$index, scope.row)"
+                  >更换默认家长</el-button
+                >
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDel(scope.$index, scope.row)"
+                  >解除关系</el-button
+                >
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </template>
       </el-table-column>
     </el-table>

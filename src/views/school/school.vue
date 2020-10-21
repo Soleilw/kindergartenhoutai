@@ -50,7 +50,7 @@
 			</div>
 		</el-dialog>
 
-		<el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}">
+		<el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 			<el-table-column prop="id" label="学校ID"></el-table-column>
 			<el-table-column prop="name" label="学校名称"></el-table-column>
 			<el-table-column prop="address" label="学校地址"></el-table-column>
@@ -90,7 +90,7 @@
 				</div>
 
 				<template v-if="user == '用户'">
-					<el-table :data="userData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="userData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="id" label="用户ID"></el-table-column>
 						<el-table-column prop="href" label="头像">
 							<template slot-scope="scope">
@@ -135,7 +135,7 @@
 					</div>
 				</template>
 				<template v-if="user == '学生'">
-					<el-table :data="studentData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="studentData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="id" label="学号"></el-table-column>
 						<el-table-column prop="name" label="姓名"></el-table-column>
 						<el-table-column prop="sex" label="性别">
@@ -166,7 +166,7 @@
 					</div>
 				</template>
 				<template v-if="user == '教师'">
-					<el-table :data="teacherData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="teacherData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="id" label="用户ID"></el-table-column>
 						<el-table-column prop="name" label="姓名"></el-table-column>
 						<el-table-column prop="wxUser.nickname" label="昵称"></el-table-column>
@@ -216,7 +216,7 @@
 				</template>
 
 				<template v-if="user == '访客'">
-					<el-table :data="visitorData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="visitorData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="id" label="访客ID"></el-table-column>
 						<el-table-column prop="user_id" label="用户ID"></el-table-column>
 						<el-table-column prop="name" label="姓名"></el-table-column>
@@ -245,7 +245,7 @@
 				</div>
 
 				<div v-if="financial === '订单列表'">
-					<el-table :data="orderData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="orderData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="school_id" label="学校ID"></el-table-column>
 						<el-table-column prop="no" label="订单ID"></el-table-column>
 						<el-table-column prop="user_id" label="用户ID"></el-table-column>
@@ -268,7 +268,7 @@
 					</div>
 				</div>
 				<div v-if="financial === '财务统计'">
-					<el-table :data="financialData" border :header-cell-style="{background:'#f0f0f0'}">
+					<el-table :data="financialData" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 						<el-table-column prop="id" label="周总额"></el-table-column>
 						<el-table-column prop="name" label="月总额"></el-table-column>
 						<el-table-column prop="address" label="季度总额"></el-table-column>

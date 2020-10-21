@@ -6,11 +6,9 @@
       </div>
     </div>
 
-    <el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}">
-      <el-table-column label="名称" type="selection"></el-table-column>
+    <el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
       <el-table-column prop="id" label="资讯ID"></el-table-column>
       <el-table-column prop="type_id" label="资讯类型"></el-table-column>
-      <!-- <el-table-column prop="detail" label="资讯描述"></el-table-column> -->
       <el-table-column prop="cover" label="资讯缩略图">
         <template slot-scope="scope">
           <img :src="scope.row.cover" style="max-width:180px;max-height:80px;" />
@@ -20,7 +18,7 @@
       <el-table-column prop="updated_at" label="更新时间"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>

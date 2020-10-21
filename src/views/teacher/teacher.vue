@@ -43,6 +43,7 @@
       ref="multipleTable"
       border
       :header-cell-style="{ background: '#f0f0f0' }"
+      max-height="620"
     >
       <el-table-column prop="id" label="用户ID"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>

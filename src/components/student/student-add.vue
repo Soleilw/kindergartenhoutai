@@ -70,7 +70,7 @@
       border
       :header-cell-style="{background:'#f0f0f0'}"
     >
-      <el-table-column label="名称" type="selection"></el-table-column>
+      <!-- <el-table-column label="名称" type="selection"></el-table-column> -->
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="文件名"></el-table-column>
       <el-table-column prop="remark" label="上传时间"></el-table-column>
