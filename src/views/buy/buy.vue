@@ -44,7 +44,7 @@
 					</el-form-item>
 					<div class="submit">
 						<el-form-item>
-							<el-button type="primary" @click="newBuy">提交</el-button>
+							<el-button type="primary" @click="newBuy" v-if="isAdd">提交</el-button>
 						</el-form-item>
 					</div>
 				</el-form>
@@ -70,15 +70,14 @@
 						<el-table-column prop="create_id" label="创建时间"></el-table-column>
 					</el-table>
 					<div class="block">
-						<el-pagination @current-change="handleOrderChange" :current-page.sync="currentOrderPage" :page-sizes="[10, 20, 30, 40, 50]"
-						 :page-size="orderPageSize" layout="sizes, prev, pager, next, jumper" :total="orderTotalPage" @size-change="handleOrderSizeChange"></el-pagination>
+						<el-pagination @current-change="orderCurrentChange" :current-page.sync="orderCurrent" :page-sizes="[10, 20, 30, 40, 50]"
+						 :page-size="orderSize" layout="sizes, prev, pager, next, jumper" :total="orderTotal" @size-change="orderSizeChange"></el-pagination>
 					</div>
 				</div>
 			</div>
 		</el-dialog>
 
-		<el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}">
-			<!-- <el-table-column label="名称" type="selection"></el-table-column> -->
+		<el-table :data="tableDate" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
 			<el-table-column prop="id" label="商品ID" width="100px"></el-table-column>
 			<el-table-column prop="title" label="商品名称"></el-table-column>
 			<el-table-column prop="price" label="商品价格"></el-table-column>
@@ -89,15 +88,15 @@
 			<el-table-column prop="updated_at" label="更新时间"></el-table-column>
 			<el-table-column label="操作" width="300px">
 				<template slot-scope="scope">
-					<el-button size="mini" type="primary" @click="handleEdit(scope.$index,scope.row)">编辑服务</el-button>
+					<el-button size="mini" type="primary" @click="handleEdit(scope.$index,scope.row)">查看服务</el-button>
 					<el-button size="mini" type="primary" @click="handleOrder(scope.$index,scope.row)">服务订单</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
 
 		<div class="block">
-			<el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 40, 50]"
-			 :page-size="pageSize" layout="sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"></el-pagination>
+			<el-pagination @current-change="currentChange" :current-page.sync="current" :page-sizes="[10, 20, 30, 40, 50]"
+			 :page-size="size" layout="sizes, prev, pager, next, jumper" :total="total" @size-change="sizeChange"></el-pagination>
 		</div>
 	</div>
 </template>
@@ -160,13 +159,14 @@
 					},
 				],
 				orderData: [],
-				orderPageSize: 10, // 订单列表
-				orderTotalPage: 0,
-				currentOrderPage: 1,
+				orderSize: 10, // 订单列表
+				orderTotal: 0,
+				orderCurrent: 1,
 				tableDate: [],
-				currentPage: 1,
-				totalPage: 0,
-				pageSize: 10,
+				current: 1,
+				total: 0,
+				size: 10,
+				isAdd: true,
 			};
 		},
 		mounted() {
@@ -176,27 +176,51 @@
 		methods: {
 			getBuys() {
 				var self = this;
-				API.buys(self.currentPage)
+				API.buys(self.current)
 					.then((res) => {
 						self.tableDate = res.data;
-						self.totalPage = res.total;
+						self.total = res.total;
 						self.loading = false;
 					})
 					.catch((err) => {
 						self.loading = false;
 					});
 			},
+			// 分页
+			currentChange(val) {
+				var self = this;
+				self.current = val;
+				self.loading = true;
+				API.buys(val)
+					.then((res) => {
+						self.loading = false;
+						self.tableDate = res.data;
+						self.total = res.total;
+					})
+					.catch((err) => {
+						self.loading = false;
+					});
+			},
+			// 每页多少条
+			sizeChange(val) {
+				var self = this;
+				self.size = val;
+				self.loading = true;
+				API.buys(self.current, val).then((res) => {
+					self.loading = false;
+					self.tableDate = res.data;
+					self.total = res.total;
+				}).catch(err => {
+					self.loading = false;
+				});
+			},
 			newBuy() {
 				var self = this;
-				// if (self.form.price) {
-				//   self.form.price = self.form.price * 100;
-				// }
-				console.log(self.form.service);
 				API.buy(self.form).then((res) => {
 					self.dialogBuy = false;
 					self.$message.success("提交成功");
 					self.getBuys();
-					self.currentPage = 1;
+					self.current = 1;
 					self.form = {};
 					self.form.service = [];
 				});
@@ -205,7 +229,7 @@
 				var self = this;
 				self.dialogBuy = true;
 				self.checkAll = false;
-
+				self.isAdd = true;
 				self.form = {
 					title: "",
 					price: "",
@@ -218,21 +242,17 @@
 			// 获取学校列表
 			getSchool() {
 				var self = this;
-				API.schools(self.currentPage, 100, 2).then((res) => {
+				API.schools(self.current, 100, 2).then((res) => {
 					self.schoolList = res.data;
 				});
 			},
 			// 全选服务
 			handleCheckAllService(val) {
 				var self = this;
-				console.log("handleCheckAllService", val);
-
 				self.form.service = val ? self.serviceList : [];
 			},
 			oneChange() {
 				var self = this;
-				console.log(self.form.service);
-				console.log(self.serviceList);
 				self.form.service.length === 6 ?
 					(self.checkAll = true) :
 					(self.checkAll = false);
@@ -241,6 +261,7 @@
 			handleEdit(index, row) {
 				var self = this;
 				self.dialogBuy = true;
+				self.isAdd = false;
 				self.form = row;
 				self.form.service = self.serviceList;
 				row.service.length === 6 ?
@@ -251,41 +272,32 @@
 				var self = this;
 				self.showServiceOrder = true;
 				self.product_id = row.id;
-				API.server(1, self.pageSize, self.product_id).then((res) => {
-					self.orderData = res.data;
-					self.orderTotalPage = res.total;
+				API.server(self.orderCurrent, self.size, self.product_id).then((res) => {
 					self.$message.success("获取数据成功");
+					self.orderData = res.data;
+					self.orderTotal = res.total;
 				});
 			},
 
-			// 分页
-			handleCurrentChange(val) {
-				var self = this;
-				self.getBuys();
-			},
-			// 每页多少条
-			handleSizeChange(val) {
-				var self = this;
-				API.buys(self.currentPage, val).then((res) => {
-					self.tableDate = res.data;
-					self.totalPage = res.total;
-				});
-			},
+			
 			// 订单列表分页
-			handleOrderChange(val) {
+			orderCurrentChange(val) {
 				var self = this;
-				self.currentOrderPage = val;
-				API.server(val, self.orderPageSize, self.id).then((res) => {
+				self.orderCurrent = val;
+				API.server(val, self.orderSize, self.product_id).then((res) => {
+					self.$message.success("获取数据成功");
 					self.orderData = res.data;
-					self.orderTotalPage = res.total;
+					self.orderTotal = res.total;
 				});
 			},
 			// 当前分页
-			handleOrderSizeChange(val) {
+			orderSizeChange(val) {
 				var self = this;
-				API.server(val, self.currentOrderPage, self.id).then((res) => {
+				self.orderSize = val;
+				API.server(self.orderCurrent, val, self.product_id).then((res) => {
+					self.$message.success("获取数据成功");
 					self.orderData = res.data;
-					self.orderTotalPage = res.total;
+					self.orderTotal = res.total;
 				});
 			},
 		},

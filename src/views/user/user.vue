@@ -234,9 +234,9 @@ export default {
       var self = this;
       API.wxUser(self.current)
         .then((res) => {
+          self.loading = false;
           self.tableData = res.data;
           self.total = res.total;
-          self.loading = false;
         })
         .catch((err) => {
           self.loading = false;
@@ -272,11 +272,11 @@ export default {
       var self = this;
       self.openPermissionForm.user_id = self.user_id;
       API.setProduct(self.openPermissionForm).then((res) => {
-        self.$message.success("提交成功"),
-          (self.openPermissionForm = {
-            user_id: "",
-            service: [],
-          });
+        self.$message.success("提交成功");
+        self.openPermissionForm = {
+          user_id: "",
+          service: [],
+        };
         self.dialogOpenPermission = false;
       });
     },
@@ -333,9 +333,9 @@ export default {
       self.current = val;
       API.wxUser(val, self.size)
         .then((res) => {
+          self.loading = false;
           self.tableData = res.data;
           self.total = res.total;
-          self.loading = false;
         })
         .catch((err) => {
           self.loading = false;
@@ -348,9 +348,9 @@ export default {
       self.size = val;
       API.wxUser(self.current, val)
         .then((res) => {
+          self.loading = false;
           self.tableData = res.data;
           self.total = res.total;
-          self.loading = false;
         })
         .catch((err) => {
           self.loading = false;

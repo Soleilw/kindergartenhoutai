@@ -146,6 +146,16 @@
                 v-model="form.permissions"
                 class="permission-item"
               >
+                <el-checkbox label="attendanceSystem" @change="oneChange" border>
+                  <span style="font-weight: bold">考勤系统</span>
+                </el-checkbox>
+              </el-checkbox-group>
+            </div>
+            <div class="permission">
+              <el-checkbox-group
+                v-model="form.permissions"
+                class="permission-item"
+              >
                 <el-checkbox label="achievement" @change="oneChange" border>
                   <span style="font-weight: bold">成绩管理页</span>
                 </el-checkbox>
@@ -499,6 +509,7 @@ export default {
         "manageEdit",
         "manageDel",
         "manageResetPwd", // 重置密码
+        "attendanceSystem",
       ],
 
       dialogDel: false,

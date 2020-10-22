@@ -66,6 +66,53 @@
       :close-on-click-modal="false"
       width="1200px"
     >
+      <div class="handle-box">
+        <div class="btn">
+          <span>签到方式: </span>
+          <el-select
+            v-model="auditState"
+            placeholder="请选择签到方式"
+            @change="changeAudit"
+          >
+            <el-option
+              v-for="item in auditList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="btn">
+          <span>签到时间: </span>
+          <el-select
+            v-model="auditTime"
+            placeholder="请选择签到时间"
+            @change="changeTime"
+          >
+            <el-option
+              v-for="item in timeList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="btn">
+          <el-date-picker
+            v-model="time1"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="timeChange1"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </div>
+      </div>
       <el-table
         :data="detailData"
         border
@@ -86,6 +133,7 @@
             <span v-else-if="scope.row.status == 2">下班</span>
           </template>
         </el-table-column>
+        <el-table-column prop="text" label="状态"></el-table-column>
         <el-table-column prop="created_at" label="创建时间"></el-table-column>
       </el-table>
     </el-dialog>
@@ -152,9 +200,36 @@ export default {
       time: "",
       start: "",
       end: "",
+      time1: "",
+      start1: "",
+      end1: "",
       user_id: "",
       dialogDetail: false,
       detailData: [],
+      auditState: "",
+      auditList: [
+        {
+          value: 1,
+          label: "刷脸",
+        },
+        {
+          value: 2,
+          label: "手动",
+        },
+      ],
+      auditTime: "",
+      timeList: [
+        {
+          value: 1,
+          label: "上班",
+        },
+        {
+          value: 2,
+          label: "下班",
+        },
+      ],
+      type: "",
+      status: "",
     };
   },
   mounted() {
@@ -245,6 +320,7 @@ export default {
     search() {
       var self = this;
       self.time = "";
+      self.current = 1;
       API.sign(self.current, self.size, self.name)
         .then((res) => {
           self.$message.success("搜索成功");
@@ -275,10 +351,67 @@ export default {
       var self = this;
       self.dialogDetail = true;
       self.user_id = row.user_id;
+      self.auditState = "";
+      self.auditTime = "";
+      self.time1 = "";
       API.signs(self.user_id).then((res) => {
         self.$message.success("获取数据成功");
         self.detailData = res;
       });
+    },
+
+    changeAudit(val) {
+      var self = this;
+      console.log(val);
+      self.type = val;
+      API.signs(
+        self.user_id,
+        self.type,
+        self.status,
+        self.start1,
+        self.end1
+      ).then((res) => {
+        self.$message.success("获取数据成功");
+        self.detailData = res;
+      });
+    },
+
+    changeTime(val) {
+      var self = this;
+      self.status = val;
+      API.signs(
+        self.user_id,
+        self.type,
+        self.status,
+        self.start1,
+        self.end1
+      ).then((res) => {
+        self.$message.success("获取数据成功");
+        self.detailData = res;
+      });
+    },
+
+    timeChange1(value) {
+      var self = this;
+      self.start1 = value[0];
+      self.end1 = value[1];
+      if (self.type || self.status) {
+        API.signs(
+          self.user_id,
+          self.type,
+          self.status,
+          self.start1,
+          self.end1
+        ).then((res) => {
+          self.$message.success("获取数据成功");
+          self.detailData = res;
+        });
+      } else {
+        API.signsTime(self.user_id, self.start1, self.end1).then((res) => {
+          self.$message.success("获取数据成功");
+          self.detailData = res;
+        });
+      }
     },
 
     refresh() {
