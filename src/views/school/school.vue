@@ -26,7 +26,7 @@
               placeholder="请输入学校地址"
             ></el-input>
           </el-form-item>
-          <el-form-item label="签到时间">
+          <el-form-item label="上下班时间">
             <el-time-select
               placeholder="上班时间"
               v-model="form.up_time"
