@@ -44,7 +44,7 @@
                 start: '08:30',
                 step: '00:15',
                 end: '18:30',
-                minTime: startTime,
+                minTime: form.up_time,
               }"
             >
             </el-time-select>
@@ -653,8 +653,6 @@ export default {
       totalPage: 0,
       school_id: "",
 
-      startTime: "",
-      endTime: "",
     };
   },
   mounted() {

@@ -56,7 +56,7 @@
             start: '08:30',
             step: '00:15',
             end: '18:30',
-            minTime: startTime,
+            minTime: up_time,
           }"
         >
         </el-time-select>
@@ -263,8 +263,6 @@ export default {
       status: "",
       up_time: "",
       below_time: "",
-      startTime: "",
-      endTime: "",
       username: localStorage.getItem("username"),
     };
   },
