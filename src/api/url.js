@@ -18,6 +18,7 @@ const url = {
 	'TeacherUser':BaseURL  + '/teacher/infos',  // 查看用户--老师
 	'Orders':BaseURL  + '/orders',  // 查看财务
 	'DelSchool':BaseURL  + '/del/school',  // 删除学校
+	'EditSchool':BaseURL  + '/edit/school',  // 学校设置时间
 	
 	
 	// 轮播图管理

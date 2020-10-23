@@ -35,6 +35,37 @@
         >
         </el-date-picker>
       </div>
+      <div class="btn" v-if="username != 'admin'">
+        <span>设置上下班时间: </span>
+        <el-time-select
+          placeholder="上班时间"
+          v-model="up_time"
+          @change="changeUp"
+          :picker-options="{
+            start: '08:30',
+            step: '00:15',
+            end: '18:30',
+          }"
+        >
+        </el-time-select>
+        <el-time-select
+          placeholder="下班时间"
+          v-model="below_time"
+          @change="changeBelow"
+          :picker-options="{
+            start: '08:30',
+            step: '00:15',
+            end: '18:30',
+            minTime: startTime,
+          }"
+        >
+        </el-time-select>
+        <el-button
+          slot="append"
+          icon="el-icon-setting"
+          @click="toSet"
+        ></el-button>
+      </div>
     </div>
 
     <el-table
@@ -230,6 +261,11 @@ export default {
       ],
       type: "",
       status: "",
+      up_time: "",
+      below_time: "",
+      startTime: "",
+      endTime: "",
+      username: localStorage.getItem("username"),
     };
   },
   mounted() {
@@ -362,7 +398,6 @@ export default {
 
     changeAudit(val) {
       var self = this;
-      console.log(val);
       self.type = val;
       API.signs(
         self.user_id,
@@ -412,6 +447,29 @@ export default {
           self.detailData = res;
         });
       }
+    },
+
+    changeUp(val) {
+      var self = this;
+      self.up_time = val;
+    },
+    changeBelow(val) {
+      var self = this;
+      self.below_time = val;
+    },
+    toSet() {
+      var self = this;
+      self.loading = true;
+      API.editSchool(self.up_time, self.below_time)
+        .then((res) => {
+          self.loading = false;
+          self.$message.success("设置成功! ");
+          self.up_time = "";
+          self.below_time = "";
+        })
+        .catch((err) => {
+          self.loading = false;
+        });
     },
 
     refresh() {

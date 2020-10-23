@@ -517,54 +517,54 @@ API.userSearch = function (id) {
 // 用户列表
 // 开通权限--学校
 API.jurisdictionSchool = function (user_id, mode) {
-	return axios.get(url.JurisdictionSchool, {
-		user_id: user_id,
-		mode: mode
-	})
-},
-// 开通权限--商品
-API.jurisdictionProducts = function (school_id) {
-	return axios.get(url.JurisdictionProducts, {
-		school_id: school_id
-	})
-},
-// 开通权限--学生
-API.jurisdictionStudent = function (user_id, school_id) {
-	return axios.get(url.JurisdictionStudent, {
-		user_id: user_id,
-		school_id: school_id
-	})
-},
-// 统计
-// 学生数总统计
-API.studentsTatal = function (type, id) {
-	return axios.get(url.StudentsTatal, {
-		type: type,
-		id: id
-	})
-},
-// 男女比例统计
-API.studentGender = function (sex, type, school_id, grade_id) {
-	return axios.get(url.StudentGender, {
-		sex: sex,
-		type: type,
-		school_id: school_id,
-		grade_id: grade_id
-	})
-},
-// 班级审核人数统计
-API.classCheckCount = function (id) {
-	return axios.get(url.ClassCheckCount, {
-		id: id
-	})
-},
-// 统计详情
-API.statistics = function (school_id, grade_id) {
-	return axios.get(url.Statistics, {
-		school_id: school_id,
-		grade_id: grade_id
-	})
-}
+		return axios.get(url.JurisdictionSchool, {
+			user_id: user_id,
+			mode: mode
+		})
+	},
+	// 开通权限--商品
+	API.jurisdictionProducts = function (school_id) {
+		return axios.get(url.JurisdictionProducts, {
+			school_id: school_id
+		})
+	},
+	// 开通权限--学生
+	API.jurisdictionStudent = function (user_id, school_id) {
+		return axios.get(url.JurisdictionStudent, {
+			user_id: user_id,
+			school_id: school_id
+		})
+	},
+	// 统计
+	// 学生数总统计
+	API.studentsTatal = function (type, id) {
+		return axios.get(url.StudentsTatal, {
+			type: type,
+			id: id
+		})
+	},
+	// 男女比例统计
+	API.studentGender = function (sex, type, school_id, grade_id) {
+		return axios.get(url.StudentGender, {
+			sex: sex,
+			type: type,
+			school_id: school_id,
+			grade_id: grade_id
+		})
+	},
+	// 班级审核人数统计
+	API.classCheckCount = function (id) {
+		return axios.get(url.ClassCheckCount, {
+			id: id
+		})
+	},
+	// 统计详情
+	API.statistics = function (school_id, grade_id) {
+		return axios.get(url.Statistics, {
+			school_id: school_id,
+			grade_id: grade_id
+		})
+	}
 
 // 更换家长人脸
 API.updateFace = function (data) {
@@ -598,6 +598,13 @@ API.signsTime = function (user_id, start, end) {
 		user_id: user_id,
 		start: start,
 		end: end
+	})
+}
+
+API.editSchool = function (up_time, below_time) {
+	return axios.post(url.EditSchool, {
+		up_time: up_time,
+		below_time: below_time,
 	})
 }
 

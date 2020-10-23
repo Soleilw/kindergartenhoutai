@@ -561,9 +561,9 @@ export default {
         },
         grades: [],
         id: "",
-		allow_parent_in: 0,
-		up_time: '',
-		below_time: ''
+        allow_parent_in: 0,
+        up_time: "",
+        below_time: "",
       },
       grade: [
         {
@@ -698,9 +698,9 @@ export default {
             password: "",
           },
           grades: [],
-		  allow_parent_in: 0,
-		  up_time: '',
-		  below_time: ''
+          allow_parent_in: 0,
+          up_time: "",
+          below_time: "",
         };
         self.$message.success("提交成功");
         self.currentPage = 1;
@@ -709,8 +709,8 @@ export default {
     // 操作
     handleEdit(index, row) {
       var self = this;
-	  self.dialogSchool = true;
-	  console.log(row);
+      self.dialogSchool = true;
+      console.log(row);
       self.form = {
         name: row.name,
         address: row.address,
@@ -723,9 +723,9 @@ export default {
         },
         grades: [],
         id: row.id,
-		allow_parent_in: row.allow_parent_in,
-		up_time: row.up_time,
-		below_time: row.below_time
+        allow_parent_in: row.allow_parent_in,
+        up_time: row.up_time,
+        below_time: row.below_time,
       };
     },
     handleShowUser(index, row) {
@@ -866,9 +866,9 @@ export default {
           password: "",
         },
         grades: [],
-		allow_parent_in: 0,
-		up_time: '',
-		below_time: ''
+        allow_parent_in: 0,
+        up_time: "",
+        below_time: "",
       };
     },
     // 年级操作
