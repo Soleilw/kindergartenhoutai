@@ -110,7 +110,7 @@ const url = {
 	
 	// 签到
 	'Sign': BaseURL + '/sign/statistics', // 获取签到列表
-	'Signs': BaseURL + '/signs', // 获取签到列表
+	'Signs': BaseURL + '/signs', // 签到详情列表
 }
 
 module.exports = url;

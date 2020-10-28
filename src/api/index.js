@@ -582,9 +582,11 @@ API.sign = function (page, limit, name, start, end) {
 	})
 }
 
-
-API.signs = function (user_id, type, status, start, end) {
+// 签到详情列表
+API.signs = function (page, limit, user_id, type, status, start, end) {
 	return axios.get(url.Signs, {
+		page: page,
+		limit: limit,
 		user_id: user_id,
 		type: type,
 		status: status,
@@ -593,8 +595,10 @@ API.signs = function (user_id, type, status, start, end) {
 	})
 }
 
-API.signsTime = function (user_id, start, end) {
+API.signsTime = function (page, limit, user_id, start, end) {
 	return axios.get(url.Signs, {
+		age: page,
+		limit: limit,
 		user_id: user_id,
 		start: start,
 		end: end
