@@ -147,7 +147,9 @@
 			// 导出成绩单示例
 			downExample() {
 				var self = this;
+				console.log(self.subjects);
 				API.example(self.subjects).then((res) => {
+					console.log(res);
 					window.open(res.request.responseURL)
 				});
 			},

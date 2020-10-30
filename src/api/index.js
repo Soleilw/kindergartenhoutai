@@ -612,4 +612,10 @@ API.editSchool = function (up_time, below_time) {
 	})
 }
 
+API.exportSign = function (id) {
+	return axios.getExcel(url.ExportSign, {
+		id: id
+	})
+}
+
 export default API

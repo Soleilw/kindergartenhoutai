@@ -31,8 +31,16 @@
         <el-button slot="append" icon="el-icon-setting" @click="toSet"></el-button>
       </div>
     </div>
+    <div class="handle-box">
+      <div class="btn">
+        <el-button type="primary" size="medium" icon="el-icon-download" @click="exportData">批量导出数据</el-button>
+      </div>
+    </div>
 
-    <el-table :data="tableDate" border :header-cell-style="{ background: '#f0f0f0' }">
+    <el-table :data="tableDate" border :header-cell-style="{ background: '#f0f0f0' }"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
       <el-table-column prop="id" label="ID"></el-table-column>
       <el-table-column prop="user_id" label="用户ID"></el-table-column>
       <el-table-column prop="name" label="用户名"></el-table-column>
@@ -182,12 +190,14 @@
         up_time: "",
         below_time: "",
         username: localStorage.getItem("username"),
+        idList: []
       };
     },
     mounted() {
       this.getSign();
     },
     methods: {
+
       getSign() {
         var self = this;
         API.sign(self.current, self.size)
@@ -266,6 +276,28 @@
             .catch((err) => {
               self.loading = false;
             });
+        }
+      },
+
+      handleSelectionChange(val) {
+        var self = this;
+        var arr = [];
+        val.forEach(item => {
+          arr.push(item.id);
+          self.idList = Array.from(new Set(arr))
+        })
+      },
+
+      exportData() {
+        var self = this;
+        if (self.idList.length > 0) {
+          API.exportSign(self.idList).then(res => {
+            console.log('导出数据res', res);
+            window.open(res.request.responseURL);
+            this.reload();
+          })
+        } else {
+          self.$message.warning("请选择要导出的数据! ");
         }
       },
 
@@ -444,8 +476,6 @@
           });
         }
       },
-
-
 
       changeUp(val) {
         var self = this;
