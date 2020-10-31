@@ -18,13 +18,13 @@
           <el-form-item label="上下班时间">
             <el-time-select placeholder="请选择上班时间" v-model="form.up_time" is-range :picker-options="{
                 start: '06:00',
-                step: '00:01',
+                step: '00:05',
                 end: '21:30',
               }">
             </el-time-select>
             <el-time-select placeholder="请选择下班时间" v-model="form.below_time" is-range :picker-options="{
                 start: '06:00',
-                step: '00:01',
+                step: '00:05',
                 end: '21:30',
                 minTime: form.up_time,
               }">

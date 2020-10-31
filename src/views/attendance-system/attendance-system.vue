@@ -17,13 +17,13 @@
         <span>设置上下班时间: </span>
         <el-time-select placeholder="请选择上班时间" v-model="up_time" @change="changeUp" :picker-options="{
             start: '06:00',
-            step: '00:01',
+            step: '00:05',
             end: '21:30',
           }">
         </el-time-select>
         <el-time-select placeholder="请选择下班时间" v-model="below_time" @change="changeBelow" :picker-options="{
             start: '06:00',
-            step: '00:01',
+            step: '00:05',
             end: '21:30',
             minTime: up_time,
           }">
