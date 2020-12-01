@@ -35,6 +35,20 @@
       <div class="btn">
         <el-button type="primary" size="medium" icon="el-icon-download" @click="exportData">批量导出数据</el-button>
       </div>
+      <div class="btn" v-if="username == 'admin'">
+        <span>选择学校：</span>
+        <el-select v-model="school" placeholder="请选择学校" @change="changeSchoolType">
+          <el-option v-for="item in schoolList" :key="item.index" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </div>
+      <div class="btn" v-if="school_id && username == 'admin'">
+        <span style="margin-right: 5px">
+          <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
+        </span>
+        <span>
+          <el-tag type="info" effect="dark">下班时间: {{off_work}}</el-tag>
+        </span>
+      </div>
       <div class="btn" v-if="username != 'admin'">
         <span style="margin-right: 5px">
           <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
@@ -200,20 +214,54 @@
         username: localStorage.getItem("username"),
         idList: [],
         on_work: '',
-        off_work: ''
+        off_work: '',
+        school: '',
+        schoolList: [],
+        school_id: ''
       };
     },
     mounted() {
       this.getSign();
       if (this.username != 'admin') {
-        API.oneSchool().then(res => {
-          this.on_work = res.up_time;
-          this.off_work = res.below_time;
-        })
+        this.getOneScl();
+      } else {
+        this.getSchool();
       }
     },
     methods: {
-
+      // 获取学校
+      getSchool() {
+        var self = this;
+        API.schools(1, 20).then(res => {
+          console.log(res);
+          self.schoolList = res.data;
+        })
+      },
+      changeSchoolType(val) {
+        var self = this;
+        self.school_id = val;
+        API.signScl(self.current, self.size, self.school_id).then(res => {
+            self.loading = false;
+            self.tableDate = res.data;
+            self.total = res.total;
+          })
+          .catch((err) => {
+            self.loading = false;
+          });
+        API.oneSchool(self.school_id).then(res => {
+          console.log(res);
+          self.on_work = res.up_time;
+          self.off_work = res.below_time;
+        })
+      },
+      // 获取单个学校
+      getOneScl() {
+        var self = this;
+        API.oneSchool().then(res => {
+          self.on_work = res.up_time;
+          self.off_work = res.below_time;
+        })
+      },
       getSign() {
         var self = this;
         API.sign(self.current, self.size)
@@ -248,6 +296,15 @@
               self.total = res.total;
             }
           );
+        } else if (self.school_id) {
+          API.signScl(val, self.size, self.school_id).then(res => {
+              self.loading = false;
+              self.tableDate = res.data;
+              self.total = res.total;
+            })
+            .catch((err) => {
+              self.loading = false;
+            });
         } else {
           API.sign(val, self.size)
             .then((res) => {
@@ -282,6 +339,15 @@
               self.total = res.total;
             }
           );
+        } else if (self.school_id) {
+          API.signScl(self.current, val, self.school_id).then(res => {
+              self.loading = false;
+              self.tableDate = res.data;
+              self.total = res.total;
+            })
+            .catch((err) => {
+              self.loading = false;
+            });
         } else {
           API.sign(self.current, val)
             .then((res) => {
@@ -320,6 +386,8 @@
       search() {
         var self = this;
         self.time = "";
+        self.school_id = '';
+        self.school = '';
         self.current = 1;
         API.sign(self.current, self.size, self.name)
           .then((res) => {
@@ -335,6 +403,8 @@
 
       timeChange(value) {
         var self = this;
+        self.school_id = '';
+        self.school = '';
         self.start = value[0];
         self.end = value[1];
         self.loading = true;

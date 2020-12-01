@@ -521,50 +521,50 @@ API.jurisdictionSchool = function (user_id, mode) {
 			user_id: user_id,
 			mode: mode
 		})
-	},
+},
 	// 开通权限--商品
-	API.jurisdictionProducts = function (school_id) {
-		return axios.get(url.JurisdictionProducts, {
-			school_id: school_id
-		})
-	},
-	// 开通权限--学生
-	API.jurisdictionStudent = function (user_id, school_id) {
-		return axios.get(url.JurisdictionStudent, {
-			user_id: user_id,
-			school_id: school_id
-		})
-	},
-	// 统计
-	// 学生数总统计
-	API.studentsTatal = function (type, id) {
-		return axios.get(url.StudentsTatal, {
-			type: type,
-			id: id
-		})
-	},
-	// 男女比例统计
-	API.studentGender = function (sex, type, school_id, grade_id) {
-		return axios.get(url.StudentGender, {
-			sex: sex,
-			type: type,
-			school_id: school_id,
-			grade_id: grade_id
-		})
-	},
-	// 班级审核人数统计
-	API.classCheckCount = function (id) {
-		return axios.get(url.ClassCheckCount, {
-			id: id
-		})
-	},
-	// 统计详情
-	API.statistics = function (school_id, grade_id) {
-		return axios.get(url.Statistics, {
-			school_id: school_id,
-			grade_id: grade_id
-		})
-	}
+API.jurisdictionProducts = function (school_id) {
+	return axios.get(url.JurisdictionProducts, {
+		school_id: school_id
+	})
+},
+// 开通权限--学生
+API.jurisdictionStudent = function (user_id, school_id) {
+	return axios.get(url.JurisdictionStudent, {
+		user_id: user_id,
+		school_id: school_id
+	})
+},
+// 统计
+// 学生数总统计
+API.studentsTatal = function (type, id) {
+	return axios.get(url.StudentsTatal, {
+		type: type,
+		id: id
+	})
+},
+// 男女比例统计
+API.studentGender = function (sex, type, school_id, grade_id) {
+	return axios.get(url.StudentGender, {
+		sex: sex,
+		type: type,
+		school_id: school_id,
+		grade_id: grade_id
+	})
+},
+// 班级审核人数统计
+API.classCheckCount = function (id) {
+	return axios.get(url.ClassCheckCount, {
+		id: id
+	})
+},
+// 统计详情
+API.statistics = function (school_id, grade_id) {
+	return axios.get(url.Statistics, {
+		school_id: school_id,
+		grade_id: grade_id
+	})
+}
 
 // 更换家长人脸
 API.updateFace = function (data) {
@@ -579,6 +579,15 @@ API.sign = function (page, limit, name, start, end) {
 		name: name,
 		start: start,
 		end: end
+	})
+}
+
+// 按学校获取签到列表
+API.signScl = function (page, limit, school_id) {
+	return axios.get(url.Sign, {
+		page: page,
+		limit: limit,
+		school_id: school_id
 	})
 }
 
