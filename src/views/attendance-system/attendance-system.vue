@@ -92,7 +92,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="text" label="状态"></el-table-column>
-        <el-table-column prop="created_at" label="打卡时间"></el-table-column>
+        <el-table-column prop="time" label="打卡时间"></el-table-column>
       </el-table>
       <div class="block">
         <el-pagination @current-change="detailsCurrentChange" :current-page.sync="detailsCurrent"
@@ -195,6 +195,9 @@
     },
     mounted() {
       this.getSign();
+      // API.schools().then(res => {
+      //   console.log(res);
+      // })
     },
     methods: {
 
