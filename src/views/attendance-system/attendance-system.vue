@@ -35,6 +35,14 @@
       <div class="btn">
         <el-button type="primary" size="medium" icon="el-icon-download" @click="exportData">批量导出数据</el-button>
       </div>
+      <div class="btn" v-if="username != 'admin'">
+        <span style="margin-right: 5px">
+          <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
+        </span>
+        <span>
+          <el-tag type="info" effect="dark">下班时间: {{off_work}}</el-tag>
+        </span>
+      </div>
     </div>
 
     <el-table :data="tableDate" border :header-cell-style="{ background: '#f0f0f0' }"
@@ -190,14 +198,19 @@
         up_time: "",
         below_time: "",
         username: localStorage.getItem("username"),
-        idList: []
+        idList: [],
+        on_work: '',
+        off_work: ''
       };
     },
     mounted() {
       this.getSign();
-      // API.schools().then(res => {
-      //   console.log(res);
-      // })
+      if (this.username != 'admin') {
+        API.oneSchool().then(res => {
+          this.on_work = res.up_time;
+          this.off_work = res.below_time;
+        })
+      }
     },
     methods: {
 
