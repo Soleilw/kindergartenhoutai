@@ -25,20 +25,13 @@ API.delStudent = function (student_id) {
 	})
 }
 
-// 搜索学生--学号
-API.searchNumber = function (page, limit, number) {
-	return axios.get(url.Students, {
-		page: page,
-		limit: limit,
-		number: number,
-	})
-}
-// 搜索学生--姓名
-API.searchName = function (page, limit, name) {
+// 搜索学生--学号/姓名
+API.searchStudent = function (page, limit, name,  number) {
 	return axios.get(url.Students, {
 		page: page,
 		limit: limit,
 		name: name,
+		number: number,
 	})
 }
 

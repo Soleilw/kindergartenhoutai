@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <el-dialog title="添加学校" :visible.sync="dialogSchool" :close-on-click-modal="false">
+    <el-dialog title="添加学校" :visible.sync="dialogSchool" :close-on-click-modal="false" @close="close">
       <div class="box">
         <el-form :model="form" label-width="100px">
           <el-form-item label="学校名称">
@@ -86,10 +86,10 @@
               <el-dropdown-item>
                 <el-button size="mini" type="primary" @click="handleShowUser(scope.$index, scope.row)">查看用户</el-button>
               </el-dropdown-item>
-              <el-dropdown-item>
+              <!-- <el-dropdown-item>
                 <el-button size="mini" type="primary" @click="handleShowFinancial(scope.$index, scope.row)">查看财务
                 </el-button>
-              </el-dropdown-item>
+              </el-dropdown-item> -->
               <el-dropdown-item>
                 <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)">删除学校</el-button>
               </el-dropdown-item>
@@ -148,9 +148,9 @@
             </el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleUserChange" :current-page.sync="currentUserPage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="userPageSize" layout="sizes, prev, pager, next, jumper"
-              :total="userTotalPage" @size-change="handleUserSizeChange"></el-pagination>
+            <el-pagination @current-change="userChange" :current-page.sync="userCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="userSize" layout="sizes, prev, pager, next, jumper"
+              :total="userTotal" @size-change="userSizeChange"></el-pagination>
           </div>
         </template>
         <template v-if="user == '学生'">
@@ -180,9 +180,9 @@
             <el-table-column prop="userInfo.phone" label="默认家长手机"></el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleStudentChange" :current-page.sync="currentStudentPage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="studentPageSize" layout="sizes, prev, pager, next, jumper"
-              :total="studentTotalPage" @size-change="handleStudentSizeChange"></el-pagination>
+            <el-pagination @current-change="studentChange" :current-page.sync="studentCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="studentSize" layout="sizes, prev, pager, next, jumper"
+              :total="studentTotal" @size-change="studentSizeChange"></el-pagination>
           </div>
         </template>
         <template v-if="user == '教师'">
@@ -236,9 +236,9 @@
             <el-table-column prop="created_at" label="创建时间"></el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleTeacherChange" :current-page.sync="currentTeacherPage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="teacherPageSize" layout="sizes, prev, pager, next, jumper"
-              :total="teacherTotalPage" @size-change="handleTeacherSizeChange"></el-pagination>
+            <el-pagination @current-change="teacherChange" :current-page.sync="teacherCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="teacherSize" layout="sizes, prev, pager, next, jumper"
+              :total="teacherTotal" @size-change="teacherSizeChange"></el-pagination>
           </div>
         </template>
 
@@ -257,14 +257,14 @@
             </el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleVisitorChange" :current-page.sync="currentVisitorPage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="visitorPageSize" layout="sizes, prev, pager, next, jumper"
-              :total="visitorTotalPage" @size-change="handleVisitorSizeChange"></el-pagination>
+            <el-pagination @current-change="visitorChange" :current-page.sync="visitorCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="visitorSize" layout="sizes, prev, pager, next, jumper"
+              :total="visitorTotal" @size-change="sisitorSizeChange"></el-pagination>
           </div>
         </template>
       </div>
     </el-dialog>
-    <el-dialog title="查看财务" :visible.sync="dialogFinancial" width="80%" @close="closeFinancial">
+    <!-- <el-dialog title="查看财务" :visible.sync="dialogFinancial" width="80%" @close="closeFinancial">
       <div class="box">
         <div class="btn">
           <el-select v-model="financial" @change="handleFinancial" placeholder="请选择">
@@ -292,9 +292,9 @@
             <el-table-column prop="created_id" label="创建时间"></el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleOrderChange" :current-page.sync="currentOrderPage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="orderPageSize" layout="sizes, prev, pager, next, jumper"
-              :total="orderTotalPage" @size-change="handleOrderSizeChange"></el-pagination>
+            <el-pagination @current-change="orderChange" :current-page.sync="orderCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="orderSize" layout="sizes, prev, pager, next, jumper"
+              :total="orderTotal" @size-change="orderSizeChange"></el-pagination>
           </div>
         </div>
         <div v-if="financial === '财务统计'">
@@ -306,13 +306,13 @@
             <el-table-column prop="id" label="年总额"></el-table-column>
           </el-table>
           <div class="block">
-            <el-pagination @current-change="handleFinanceChange" :current-page.sync="currentFinancePage"
-              :page-sizes="[10, 20, 30, 40, 50]" :page-size="financePageSize" layout="sizes, prev, pager, next, jumper"
-              :total="financeTotalPage" @size-change="handleFinanceSizeChange"></el-pagination>
+            <el-pagination @current-change="handleFinanceChange" :current-page.sync="financeCurrent"
+              :page-sizes="[10, 20, 30, 40, 50]" :page-size="financeSize" layout="sizes, prev, pager, next, jumper"
+              :total="financeTotal" @size-change="handleFinanceSizeChange"></el-pagination>
           </div>
         </div>
       </div>
-    </el-dialog>
+    </el-dialog> -->
 
     <!-- 删除提示框 -->
     <el-dialog :visible.sync="dialogDel" title="删除学校" width="20%" align="center" :close-on-click-modal="false">
@@ -324,8 +324,8 @@
     </el-dialog>
 
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 30, 40, 50]" :page-size="10" layout="sizes, prev, pager, next, jumper" :total="totalPage"
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="current"
+        :page-sizes="[10, 20, 30, 40, 50]" :page-size="10" layout="sizes, prev, pager, next, jumper" :total="total"
         @size-change="handleSizeChange"></el-pagination>
     </div>
   </div>
@@ -376,7 +376,7 @@
         // 操作
         // 查看用户
         dialogUser: false,
-        user: "访客",
+        user: "用户",
         userList: [{
             value: 1,
             label: "用户",
@@ -396,24 +396,24 @@
         ],
         id: "",
         userData: [], // 用户列表
-        userPageSize: 10,
-        userTotalPage: 0,
-        currentUserPage: 1,
+        userSize: 10,
+        userTotal: 0,
+        userCurrent: 1,
 
         teacherData: [], // 教师列表
-        teacherPageSize: 10,
-        teacherTotalPage: 0,
-        currentTeacherPage: 1,
+        teacherSize: 10,
+        teacherTotal: 0,
+        teacherCurrent: 1,
 
         studentData: [], // 学生列表
-        studentPageSize: 10,
-        studentTotalPage: 0,
-        currentStudentPage: 1,
+        studentSize: 10,
+        studentTotal: 0,
+        studentCurrent: 1,
 
         visitorData: [], // 访客列表
-        visitorPageSize: 10,
-        visitorTotalPage: 0,
-        currentVisitorPage: 1,
+        visitorSize: 10,
+        visitorTotal: 0,
+        visitorCurrent: 1,
 
         // 查看财务
         dialogFinancial: false,
@@ -428,40 +428,78 @@
           },
         ],
         orderData: [],
-        orderPageSize: 10, // 订单列表
-        orderTotalPage: 0,
-        currentOrderPage: 1,
+        orderSize: 10, // 订单列表
+        orderTotal: 0,
+        orderCurrent: 1,
         financialData: [],
-        financePageSize: 10, // 财务统计
-        financeTotalPage: 0,
-        currentFinancePage: 1,
+        financeSize: 10, // 财务统计
+        financeTotal: 0,
+        financeCurrent: 1,
 
         tableDate: [],
 
         // 分页
-        currentPage: 1,
-        totalPage: 0,
+        current: 1,
+        total: 0,
         school_id: "",
 
       };
     },
     mounted() {
-      this.getSchool();
+      this.getSchool(this.current);
       this.generateData();
     },
     methods: {
       // 获取学校列表
-      getSchool() {
+      getSchool(cur, list) {
         var self = this;
-        API.schools(self.currentPage)
+        API.schools(cur, list)
           .then((res) => {
             self.tableDate = res.data;
-            self.totalPage = res.total;
+            self.total = res.total;
             self.loading = false;
           })
           .catch((err) => {
             self.loading = false;
           });
+      },
+      // 分页
+      handleCurrentChange(val) {
+        var self = this;
+        self.loading = true;
+        self.getSchool(val);
+      },
+      // 每页多少条
+      handleSizeChange(val) {
+        var self = this;
+        self.loading = true;
+        self.getSchool(1, val);
+        self.current = 1;
+      },
+
+      // 添加学校
+      addSchool() {
+        var self = this;
+        self.dialogSchool = true;
+      },
+      close() {
+        var self = this;
+        self.form = {
+          name: "",
+          address: "",
+          in_group: "",
+          out_group: "",
+          mode: 1,
+          user: {
+            username: "",
+            password: "",
+          },
+          grades: [],
+          id: "",
+          allow_parent_in: 0,
+          up_time: "",
+          below_time: "",
+        };
       },
       newSchool() {
         var self = this;
@@ -474,24 +512,8 @@
         });
         API.school(self.form).then((res) => {
           self.dialogSchool = false;
-          self.getSchool();
-          self.form = {
-            name: "",
-            address: "",
-            in_group: "",
-            out_group: "",
-            mode: 1,
-            user: {
-              username: "",
-              password: "",
-            },
-            grades: [],
-            allow_parent_in: 0,
-            up_time: "",
-            below_time: "",
-          };
+          self.getSchool(self.current);
           self.$message.success("提交成功");
-          self.currentPage = 1;
         });
       },
       // 操作
@@ -520,113 +542,213 @@
         var self = this;
         self.dialogUser = true;
         self.id = row.id;
+        self.userCurrent = 1;
+        self.getSclUser(self.userCurrent, self.userSize);
       },
       closeShowUser() {
         var self = this;
-        self.user = "访客";
+        self.user = "用户";
         self.userData = [];
         self.studentData = [];
         self.teacherData = [];
         self.visitorData = [];
       },
+
+      // 用户
+      getSclUser(cur, list) {
+        var self = this;
+        API.schoolUser(cur, list, self.id).then(
+          (res) => {
+            self.userData = res.data;
+            self.userTotal = res.total;
+            self.$message.success("获取数据成功");
+          }
+        );
+      },
+      // 学生
+      getStu(cur, list) {
+        var self = this;
+        API.studentInfo(cur, list, self.id).then((res) => {
+          self.studentData = res.data;
+          self.studentTotal = res.total;
+          self.$message.success("获取数据成功");
+        });
+      },
+      // 教师
+      getTeacher(cur, list) {
+        var self = this;
+        API.teacherUser(cur, list, self.id).then((res) => {
+          self.teacherData = res.data;
+          self.teacherTotal = res.total;
+          self.$message.success("获取数据成功");
+        });
+      },
+      // 访客
+      getVistor(cur, list) {
+        var self = this;
+        API.visitors(cur, list, self.id).then(
+          (res) => {
+            self.visitorData = res.data;
+            self.visitorTotal = res.total;
+            self.$message.success("获取数据成功");
+          }
+        );
+      },
       handleUser(value) {
         var self = this;
+        self.userCurrent = 1;
+        self.studentCurrent = 1;
+        self.teacherCurrent = 1;
+        self.visitorCurrent = 1;
         switch (value) {
           case 1:
             self.$nextTick(() => {
               self.user = "用户";
-              API.schoolUser(
-                self.currentUserPage,
-                self.userPageSize,
-                self.id
-              ).then((res) => {
-                self.userData = res.data;
-                self.userTotalPage = res.total;
-                self.$message.success("获取数据成功");
-              });
+              self.getSclUser(self.userCurrent, self.userSize);
             });
             break;
           case 2:
             self.$nextTick(() => {
               self.user = "学生";
-              API.studentInfo(
-                self.currentStudentPage,
-                self.studentPageSize,
-                self.id
-              ).then((res) => {
-                self.studentData = res.data;
-                self.studentTotalPage = res.total;
-                self.$message.success("获取数据成功");
-              });
+              self.getStu(self.studentCurrent, self.studentSize);
             });
             break;
           case 3:
             self.$nextTick(() => {
               self.user = "教师";
-              API.teacherUser(
-                self.currentTeacherPage,
-                self.teacherPageSize,
-                self.id
-              ).then((res) => {
-                self.teacherData = res.data;
-                self.teacherTotalPage = res.total;
-                self.$message.success("获取数据成功");
-              });
+              self.getTeacher(self.teacherCurrent, self.teacherSize);
             });
             break;
           case 4:
             self.$nextTick(() => {
               self.user = "访客";
-              API.visitors(
-                self.currentVisitorPage,
-                self.visitorPageSize,
-                self.id
-              ).then((res) => {
-                self.visitorData = res.data;
-                self.visitorTotalPage = res.total;
-                self.$message.success("获取数据成功");
-              });
+              self.getVistor(self.visitorCurrent, self.visitorSize);
             });
             break;
         }
       },
+      // 访客分页
+      visitorChange(val) {
+        var self = this;
+        self.visitorCurrent = val;
+        self.getVistor(val, self.visitorSize);
+      },
+      // 当前分页
+      sisitorSizeChange(val) {
+        var self = this;
+        self.visitorSize = val;
+        self.getVistor(1, val);
+        self.visitorCurrent = 1;
+      },
+      // 老师分页
+      teacherChange(val) {
+        var self = this;
+        self.teacherCurrent = val;
+        self.getTeacher(val, self.teacherSize);
+      },
+      // 当前分页
+      teacherSizeChange(val) {
+        var self = this;
+        self.teacherSize = val;
+        self.getTeacher(1, val);
+        self.teacherCurrent = 1;
+      },
+      // 用户分页
+      userChange(val) {
+        var self = this;
+        self.userCurrent = val;
+        self.getSclUser(val, self.userSize);
+      },
+      // 当前分页
+      userSizeChange(val) {
+        var self = this;
+        self.getSclUser(1, val);
+        self.userCurrent = 1;
+      },
+      // 学生分页
+      studentChange(val) {
+        var self = this;
+        self.studentCurrent = val;
+        self.getStu(val, self.studentSize);
+      },
+      // 当前分页
+      studentSizeChange(val) {
+        var self = this;
+        self.studentSize = val;
+        self.getStu(1, val);
+        self.studentCurrent = 1;
+      },
+
       handleShowFinancial(index, row) {
         var self = this;
         self.dialogFinancial = true;
         self.id = row.id;
       },
-      handleFinancial(value) {
-        var self = this;
-        switch (value) {
-          case 1:
-            self.$nextTick(() => {
+      /*       handleFinancial(value) {
+              var self = this;
+              switch (value) {
+                case 1:
+                  self.$nextTick(() => {
+                    self.financial = "订单列表";
+                    API.orders(1, 10, self.id).then((res) => {
+                      self.orderData = res.data;
+                      self.orderTotal = res.total;
+                      self.$message.success("获取数据成功");
+                    });
+                  });
+                  break;
+                case 2:
+                  self.financial = "财务统计";
+                  API.orders(1, 10, self.id).then((res) => {
+                    self.financialData = res.data;
+                    self.financeTotal = res.total;
+                    self.$message.success("获取数据成功");
+                  });
+                  break;
+              }
+            },
+            closeFinancial() {
+              var self = this;
               self.financial = "订单列表";
-              API.orders(1, 10, self.id).then((res) => {
+              self.orderData = [];
+              self.financialData = [];
+            },
+            // 订单列表分页
+            orderChange(val) {
+              var self = this;
+              self.orderCurrent = val;
+              API.orders(val, self.orderSize, self.id).then((res) => {
                 self.orderData = res.data;
-                self.orderTotalPage = res.total;
-                self.$message.success("获取数据成功");
+                self.orderTotal = res.total;
               });
-            });
-            break;
-          case 2:
-            self.financial = "财务统计";
-            API.orders(1, 10, self.id).then((res) => {
-              self.financialData = res.data;
-              self.financeTotalPage = res.total;
-              self.$message.success("获取数据成功");
-            });
-            break;
-        }
-      },
-      closeFinancial() {
-        var self = this;
-        self.financial = "订单列表";
-        self.orderData = [];
-        self.financialData = [];
-      },
+            },
+            // 当前分页
+            orderSizeChange(val) {
+              var self = this;
+              API.orders(val, self.orderCurrent, self.id).then((res) => {
+                self.orderData = res.data;
+                self.orderTotal = res.total;
+              });
+            },
+            // 财务统计分页
+            handleFinanceChange(val) {
+              var self = this;
+              self.financeCurrent = val;
+              API.orders(val, self.financeSize, self.id).then((res) => {
+                self.financialData = res.data;
+                self.financeTotal = res.total;
+              });
+            },
+            // 当前分页
+            handleFinanceSizeChange(val) {
+              var self = this;
+              API.orders(val, self.financeCurrent, self.id).then((res) => {
+                self.financialData = res.data;
+                self.financeTotal = res.total;
+              });
+            }, */
       handleDelete(index, row) {
         var self = this;
-        console.log(row);
         self.school_id = row.id;
         self.dialogDel = true;
       },
@@ -635,30 +757,10 @@
         API.delSchool(self.school_id).then((res) => {
           self.dialogDel = false;
           self.$message.success("删除成功");
-          self.getSchool();
+          self.getSchool(self.current);
         });
       },
 
-      // 添加学校
-      addSchool() {
-        var self = this;
-        self.dialogSchool = true;
-        self.form = {
-          name: "",
-          address: "",
-          in_group: "",
-          out_group: "",
-          mode: 1,
-          user: {
-            username: "",
-            password: "",
-          },
-          grades: [],
-          allow_parent_in: 0,
-          up_time: "",
-          below_time: "",
-        };
-      },
       // 年级操作
       addGrade() {
         var self = this;
@@ -762,139 +864,6 @@
           });
         }
         return self.classList;
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        var self = this;
-        self.getSchool();
-      },
-      // 每页多少条
-      handleSizeChange(val) {
-        var self = this;
-        API.schools(self.currentPage, val).then((res) => {
-          self.tableDate = res.data;
-          self.totalPage = res.total;
-        });
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        var self = this;
-        self.getSchool();
-      },
-      // 每页多少条
-      handleSizeChange(val) {
-        var self = this;
-        API.schools(self.currentPage, val).then((res) => {
-          self.tableDate = res.data;
-          self.totalPage = res.total;
-        });
-      },
-
-      // 访客分页
-      handleVisitorChange(val) {
-        var self = this;
-        self.currentVisitorPage = val;
-        API.visitors(val, self.visitorPageSize, self.id).then((res) => {
-          self.visitorData = res.data;
-          self.visitorTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleVisitorSizeChange(val) {
-        var self = this;
-        API.visitors(self.currentVisitorPage, val, self.id).then((res) => {
-          self.visitorData = res.data;
-          self.visitorTotalPage = res.total;
-        });
-      },
-
-      // 老师分页
-      handleTeacherChange(val) {
-        var self = this;
-        self.currentTeacherPage = val;
-        API.teacherUser(val, self.teacherPageSize, self.id).then((res) => {
-          self.teacherData = res.data;
-          self.teacherTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleTeacherSizeChange(val) {
-        var self = this;
-        API.teacherUser(self.currentTeacherPage, val, self.id).then((res) => {
-          self.teacherData = res.data;
-          self.teacherTotalPage = res.total;
-        });
-      },
-
-      // 用户分页
-      handleUserChange(val) {
-        var self = this;
-        self.currentUserPage = val;
-        API.schoolUser(val, self.userPageSize, self.id).then((res) => {
-          self.userData = res.data;
-          self.userTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleUserSizeChange(val) {
-        var self = this;
-        API.schoolUser(self.currentUserPage, val, self.id).then((res) => {
-          self.userData = res.data;
-          self.userTotalPage = res.total;
-        });
-      },
-      // 学生分页
-      handleStudentChange(val) {
-        var self = this;
-        self.currentStudentPage = val;
-        API.studentInfo(val, self.studentPageSize, self.id).then((res) => {
-          self.studentData = res.data;
-          self.studentTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleStudentSizeChange(val) {
-        var self = this;
-        API.studentInfo(self.currentStudentPage, val, self.id).then((res) => {
-          self.studentData = res.data;
-          self.studentTotalPage = res.total;
-        });
-      },
-      // 订单列表分页
-      handleOrderChange(val) {
-        var self = this;
-        self.currentOrderPage = val;
-        API.orders(val, self.orderPageSize, self.id).then((res) => {
-          self.orderData = res.data;
-          self.orderTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleOrderSizeChange(val) {
-        var self = this;
-        API.orders(val, self.currentOrderPage, self.id).then((res) => {
-          self.orderData = res.data;
-          self.orderTotalPage = res.total;
-        });
-      },
-      // 财务统计分页
-      handleFinanceChange(val) {
-        var self = this;
-        self.currentFinancePage = val;
-        API.orders(val, self.financePageSize, self.id).then((res) => {
-          self.financialData = res.data;
-          self.financeTotalPage = res.total;
-        });
-      },
-      // 当前分页
-      handleFinanceSizeChange(val) {
-        var self = this;
-        API.orders(val, self.currentFinancePage, self.id).then((res) => {
-          self.financialData = res.data;
-          self.financeTotalPage = res.total;
-        });
       },
     },
   };

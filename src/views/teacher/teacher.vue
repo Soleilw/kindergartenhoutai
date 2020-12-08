@@ -68,9 +68,9 @@
     </el-dialog>
 
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 30, 40, 50]" :page-size="pageSize" layout="sizes, prev, pager, next, jumper"
-        :total="totalPage" @size-change="handleSizeChange"></el-pagination>
+      <el-pagination @current-change="currentChange" :current-page.sync="current" :page-sizes="[10, 20, 30, 40, 50]"
+        :page-size="size" layout="sizes, prev, pager, next, jumper" :total="totalPage" @size-change="sizeChange">
+      </el-pagination>
     </div>
 
     <el-dialog :visible.sync="dialogTeacher" title="教师详情" width="500px" :close-on-click-modal="false">
@@ -161,16 +161,16 @@
         dialogDel: false, // 删除
         id: "",
         // 分页
-        currentPage: 1,
+        current: 1,
         totalPage: 0,
-        pageSize: 10,
+        size: 10,
         info_id: "", // 审核教师
         permissions: localStorage.getItem("permissions"),
         role: localStorage.getItem("role"),
       };
     },
     mounted() {
-      this.search();
+      this.getTeacher(this.current, this.size);
     },
     methods: {
       // 获取教师
@@ -206,19 +206,41 @@
             self.worker = 3;
         }
       },
+      getTeacher(cur, list, state, worker) {
+        var self = this;
+        API.teacher(cur, list, state, worker)
+          .then((res) => {
+            self.tableData = res.data;
+            self.totalPage = res.total;
+            self.loading = false;
+          })
+          .catch((err) => {
+            self.loading = false;
+          });
+      },
+      // 分页
+      currentChange(val) {
+        var self = this;
+        self.current = val;
+        self.loading = true;
+        self.getTeacher(val, self.size, self.state, self.worker)
+      },
+      // 每页多少条
+      sizeChange(val) {
+        var self = this;
+        self.size = val;
+        self.loading = true;
+        if (self.auditState && self.workerState) {
+          self.getTeacher(1, val, self.state, self.worker)
+        }
+        self.current = 1;
+
+      },
       search() {
         var self = this;
+        self.current = 1;
         if (self.auditState && self.workerState) {
-          API.teacher(1, self.pageSize, self.state, self.worker)
-            .then((res) => {
-              self.tableData = res.data;
-              self.totalPage = res.total;
-              self.currentPage = 1;
-              self.loading = false;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.getTeacher(self.current, self.size, self.state, self.worker)
         }
       },
 
@@ -235,7 +257,6 @@
       handleAudit(index, row) {
         var self = this;
         self.info_id = row.id;
-        console.log(self.info_id);
         self.dialogAudit = true;
       },
       toAudit() {
@@ -247,7 +268,7 @@
         API.audit(userId1).then((res) => {
           self.dialogAudit = false;
           self.$message.success("提交成功");
-          self.search();
+          self.getTeacher(self.current, self.size, self.state, self.worker);
         });
       },
       unAudit() {
@@ -259,7 +280,7 @@
         API.audit(userId2).then((res) => {
           self.dialogAudit = false;
           self.$message.success("提交成功");
-          self.search();
+          self.getTeacher(self.current, self.size, self.state, self.worker);
         });
       },
       handleDel(index, row) {
@@ -272,30 +293,8 @@
         API.delTeacher(self.id).then((res) => {
           self.$message.success("删除成功");
           self.dialogDel = false;
-          self.search();
-          self.currentPage = 1;
+          self.getTeacher(self.current, self.size, self.state, self.worker);
         });
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        var self = this;
-        API.teacher(val, self.pageSize, self.state, self.worker).then((res) => {
-          self.tableData = res.data;
-          self.totalPage = res.total;
-        });
-      },
-      // 每页多少条
-      handleSizeChange(val) {
-        var self = this;
-        self.pageSize = val;
-        if (self.auditState && self.workerState) {
-          API.teacher(1, self.pageSize, self.state, self.worker).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-            self.currentPage = 1;
-          });
-        }
       },
     },
   };

@@ -57,9 +57,9 @@
     </el-table>
 
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 30, 40, 50]" :page-size="pageSize" layout="sizes, prev, pager, next, jumper"
-        :total="totalPage" @size-change="handleSizeChange"></el-pagination>
+      <el-pagination @current-change="currentChange" :current-page.sync="current" :page-sizes="[10, 20, 30, 40, 50]"
+        :page-size="size" layout="sizes, prev, pager, next, jumper" :total="total" @size-change="sizeChange">
+      </el-pagination>
     </div>
 
     <el-dialog title="更换默认家长" :visible.sync="dialogFamilyChange" width="20%" align="center"
@@ -163,6 +163,7 @@
 <script>
   import API from "@/api/index.js";
   import md5 from "blueimp-md5";
+  import axios from "axios";
 
   export default {
     name: "family",
@@ -184,9 +185,9 @@
         },
         student_id: "",
         user_id: "",
-        currentPage: 1,
-        totalPage: 0,
-        pageSize: 10,
+        current: 1,
+        total: 0,
+        size: 10,
         permissions: localStorage.getItem("permissions"),
         role: localStorage.getItem("role"),
         imgData: {
@@ -208,33 +209,73 @@
       };
     },
     mounted() {
-      this.getFamily();
+      this.getFamily(this.current, this.size);
     },
     methods: {
       // 获取家长
-      getFamily() {
+      getFamily(cur, list) {
         var self = this;
-        self.pageSize = 10;
-        API.family(1)
+        API.family(cur, list)
           .then((res) => {
             self.loading = false;
             self.tableData = res.data;
-            self.totalPage = res.total;
+            self.total = res.total;
           })
           .catch((err) => {
             self.loading = false;
           });
       },
+      // 分页
+      currentChange(val) {
+        var self = this;
+        self.loading = true;
+        self.current = val;
+        if (self.number) {
+          self.fucSearch(val, self.size, self.number);
+        } else {
+          self.getFamily(val, self.size);
+        }
+      },
+      // 每页多少条
+      sizeChange(val) {
+        var self = this;
+        self.size = val;
+        if (self.number) {
+          self.fucSearch(1, val, self.number);
+        } else {
+          self.getFamily(1, val);
+        }
+        self.current = 1;
+      },
+      fucSearch(cur, list, number) {
+        var self = this;
+        API.familySearch(cur, list, number).then((res) => {
+          self.loading = false;
+          self.$message.success("搜索成功！");
+          self.tableData = res.data;
+          self.total = res.total;
+        }).catch((err) => {
+          self.loading = false;
+        });
+      },
+      // 搜索
+      search() {
+        var self = this;
+        self.current = 1;
+        self.loading = true;
+        if (self.number) {
+          self.fucSearch(self.current, self.size, self.number);
+        }
+      },
+
       handleMore(index, row) {
         var self = this;
-        self.dialogFamily = true;
         self.studentList = row.student;
         self.master = row.master;
-        // self.tableList = row.UserInfo;
         if (row.UserInfo) {
+          self.dialogFamily = true;
           self.tableList = row.UserInfo;
         } else {
-          self.dialogFamily = false;
           self.$message.warning("暂无家长更多信息");
         }
       },
@@ -247,9 +288,8 @@
         var self = this;
         API.masterFamily(self.ID).then((res) => {
           self.$message.success("更换成功");
-          self.getFamily();
+          self.getFamily(self.current, self.size);
           self.dialogFamilyChange = false;
-          self.currentPage = 1;
         });
       },
       handleDel(index, row) {
@@ -265,59 +305,14 @@
           .then((res) => {
             self.$message.success("解除成功");
             self.dialogDel = false;
-            self.getFamily();
-            self.currentPage = 1;
+            self.getFamily(self.current, self.size);
           })
           .catch((err) => {});
-      },
-      // 搜索
-      search() {
-        var self = this;
-        if (self.number) {
-          API.familySearch(1, self.pageSize, self.number).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-            // self.number = '';
-            self.$message.success("搜索成功！");
-          });
-        }
       },
 
       // 获取家长列表
       refresh() {
         this.reload();
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        var self = this;
-        if (self.number) {
-          API.familySearch(val, self.pageSize, self.number).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-          });
-        } else {
-          API.family(val, self.pageSize).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-          });
-        }
-      },
-      // 每页多少条
-      handleSizeChange(val) {
-        var self = this;
-        self.pageSize = val;
-        if (self.number) {
-          API.familySearch(1, val, self.number).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-          });
-        } else {
-          API.family(1, self.pageSize).then((res) => {
-            self.tableData = res.data;
-            self.totalPage = res.total;
-          });
-        }
       },
 
       // 更换人脸
@@ -331,7 +326,6 @@
       // 人脸信息
       handleChange(file) {
         var self = this;
-        // console.log(file);
         self.change_href = URL.createObjectURL(file.raw);
         self.hasNewImage = true;
       },
@@ -342,7 +336,6 @@
       },
       beforeAvatarUpload(file) {
         var self = this;
-        // self.familyForm.href = file.name;
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
           this.$message.error("上传图片大小不能超过 2MB!");
@@ -354,8 +347,7 @@
         if (self.change_href === "") {
           API.updateFace(self.familyForm).then((res) => {
             self.$message.success("上传成功");
-            self.currentPage = 1;
-            self.getFamily();
+            self.getFamily(self.current, self.size);
             self.familyForm.href = "";
             self.dialogFace = false;
           });
@@ -365,13 +357,11 @@
       },
       handleAvatarSuccess(res, file) {
         var self = this;
-        console.log(111, res);
         file.url = `${res.data}`;
         self.familyForm.href = file.url;
         API.updateFace(self.familyForm).then((res) => {
           self.$message.success("上传成功");
-          self.currentPage = 1;
-          self.getFamily();
+          self.getFamily(self.current, self.size);
           self.$refs.upload.clearFiles();
           self.familyForm.href = "";
           self.change_href = "";

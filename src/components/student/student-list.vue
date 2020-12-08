@@ -5,9 +5,12 @@
 				<el-button type="primary" @click="addStudent">添加学生</el-button>
 			</div>
 			<div class="btn">
-				<el-input placeholder="输入学生学号/姓名" v-model="student" @keyup.enter.native="search(student)" class="input-with-select">
-					<el-select v-model="type" placeholder="请选择搜索方式" slot="prepend" @change="changeType" style="width: 150px;">
-						<el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+				<el-input placeholder="输入学生学号/姓名" v-model="student" @keyup.enter.native="search(student)"
+					class="input-with-select">
+					<el-select v-model="type" placeholder="请选择搜索方式" slot="prepend" @change="changeType"
+						style="width: 150px;">
+						<el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
+						</el-option>
 					</el-select>
 					<el-button slot="append" icon="el-icon-search" @click="search(student)"></el-button>
 				</el-input>
@@ -19,12 +22,14 @@
 				<el-form :model="form" label-width="100px">
 					<el-form-item label="年级">
 						<el-select v-model="grade" placeholder="请选择年级" @change="gradeOnChange">
-							<el-option v-for="item in gradeList" :key="item.id" :label="item.title" :value="item.id"></el-option>
+							<el-option v-for="item in gradeList" :key="item.id" :label="item.title" :value="item.id">
+							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="班级">
 						<el-select v-model="classValue" placeholder="请选择班级" @change="classOnChange">
-							<el-option v-for="item in classList" :key="item.id" :label="item.title" :value="item.id"></el-option>
+							<el-option v-for="item in classList" :key="item.id" :label="item.title" :value="item.id">
+							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="姓名">
@@ -51,7 +56,8 @@
 			</div>
 		</el-dialog>
 
-		<el-table :data="tableData" ref="multipleTable" border :header-cell-style="{background:'#f0f0f0'}" max-height="620">
+		<el-table :data="tableData" ref="multipleTable" border :header-cell-style="{background:'#f0f0f0'}"
+			max-height="620">
 			<el-table-column prop="id" label="学生ID"></el-table-column>
 			<el-table-column prop="number" label="学号"></el-table-column>
 			<el-table-column prop="name" label="姓名"></el-table-column>
@@ -78,19 +84,24 @@
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item>
-								<el-button size="mini" type="primary" @click="handleFace(scope.$index, scope.row)">更换人脸</el-button>
+								<el-button size="mini" type="primary" @click="handleFace(scope.$index, scope.row)">更换人脸
+								</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
-								<el-button size="mini" type="primary" @click="handleFamily(scope.$index, scope.row)">绑定家长</el-button>
+								<el-button size="mini" type="primary" @click="handleFamily(scope.$index, scope.row)">
+									绑定家长</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
-								<el-button size="mini" type="primary" @click="handleFaceLogs(scope.$index, scope.row)">查看进出记录</el-button>
+								<el-button size="mini" type="primary" @click="handleFaceLogs(scope.$index, scope.row)">
+									查看进出记录</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
-							<el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+								<el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑
+								</el-button>
 							</el-dropdown-item>
 							<el-dropdown-item>
-								<el-button type="danger" size="mini" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+								<el-button type="danger" size="mini" @click="handleDel(scope.$index, scope.row)">删除
+								</el-button>
 							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
@@ -99,8 +110,9 @@
 		</el-table>
 
 		<div class="block">
-			<el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 40, 50]"
-			 :page-size="pageSize" layout="sizes, prev, pager, next, jumper" :total="totalPage" @size-change="handleSizeChange"></el-pagination>
+			<el-pagination @current-change="currentChange" :current-page.sync="current"
+				:page-sizes="[10, 20, 30, 40, 50]" :page-size="size" layout="sizes, prev, pager, next, jumper"
+				:total="total" @size-change="sizeChange"></el-pagination>
 		</div>
 
 		<!-- 绑定家长 -->
@@ -108,9 +120,10 @@
 			<div class="box">
 				<el-form :model="bindFormFamily">
 					<el-form-item label="选择家长">
-						<el-select v-model="bindFormFamily.user_id" filterable remote placeholder="请选择家长" @change="familyChange"
-						 :remote-method="remoteMethod">
-							<el-option v-for="item in familyList" :key="item.value" :label="item.value + ' ' + item.label" :value="item.value"></el-option>
+						<el-select v-model="bindFormFamily.user_id" filterable remote placeholder="请选择家长"
+							@change="familyChange" :remote-method="remoteMethod">
+							<el-option v-for="item in familyList" :key="item.value"
+								:label="item.value + ' ' + item.label" :value="item.value"></el-option>
 						</el-select>
 					</el-form-item>
 					<div class="submit">
@@ -125,12 +138,6 @@
 		<el-dialog title="更换人脸" :visible.sync="dialogFace" :close-on-click-modal="false" width="500px">
 			<div class="box">
 				<el-form :model="familyForm">
-					<!-- <el-form-item label="选择家长">
-						<el-select v-model="familyForm.user_id" filterable placeholder="请选择家长" @change="familyChange">
-							<el-option v-for="item in familyList" :key="item.id" :label="item.id + ' ' + item.nickname" :value="item.id">
-							</el-option>
-						</el-select>
-          </el-form-item>-->
 					<!-- 提示 -->
 					<el-form-item label="只允许进校">
 						<el-radio-group v-model="familyForm.only_in">
@@ -144,9 +151,10 @@
 						</p>
 					</div>
 					<el-form-item label="更换人脸图片">
-						<el-upload action="https://upload-z2.qiniup.com" ref="upload" :limit="1" :before-upload="beforeAvatarUpload"
-						 :auto-upload="false" :on-success="handleAvatarSuccess" :on-remove="handleRemove" :on-exceed="handleExceed"
-						 :on-change="handleChange" :data="imgData">
+						<el-upload action="https://upload-z2.qiniup.com" ref="upload" :limit="1"
+							:before-upload="beforeAvatarUpload" :auto-upload="false" :on-success="handleAvatarSuccess"
+							:on-remove="handleRemove" :on-exceed="handleExceed" :on-change="handleChange"
+							:data="imgData">
 							<el-button size="small" type="primary">选择图片</el-button>
 						</el-upload>
 						<div v-if="hasNewImage" style="color: red; font-size: 12px;">* 点击文件名可删除所选图片</div>
@@ -173,7 +181,7 @@
 		</el-dialog>
 
 		<!-- 进出记录 -->
-		<el-dialog title="进出记录" :visible.sync="dialogFaceLogs" :close-on-click-modal="false" width="700px">
+		<el-dialog title="进出记录" :visible.sync="dialogFaceLogs" :close-on-click-modal="false" width="1000px">
 			<div class="box">
 				<el-table :data="FaceLogsDate" border :header-cell-style="{background:'#f0f0f0'}">
 					<el-table-column prop="timestamp" label="时间"></el-table-column>
@@ -186,8 +194,8 @@
 				</el-table>
 			</div>
 			<div class="block">
-				<el-pagination @current-change="handleLogsCurrentChange" :current-page.sync="currentLogsPage" :page-size="10"
-				 layout="prev, pager, next, jumper" :total="logsTotalPage"></el-pagination>
+				<el-pagination @current-change="handleLogsCurrentChange" :current-page.sync="currentLogsPage"
+					:page-size="10" layout="prev, pager, next, jumper" :total="logsTotalPage"></el-pagination>
 			</div>
 		</el-dialog>
 
@@ -254,7 +262,7 @@
 				hasNewImage: false,
 				new_file: "",
 				student: "", // 搜索--学号
-				type: "", // 选中的搜索方式
+				type: 2, // 选中的搜索方式
 				typeList: [{
 						// 搜索方式
 						value: 1,
@@ -279,18 +287,17 @@
 				tableData: [],
 				face_image: "",
 				// 分页
-				currentPage: 1,
-				totalPage: 0,
-				pageSize: 10,
+				current: 1,
+				total: 0,
+				size: 10,
 
 				permissions: localStorage.getItem("permissions"),
 				role: localStorage.getItem("role"),
 			};
 		},
 		mounted() {
-			this.getStudent();
+			this.getStudent(this.current, this.size);
 			this.getGrade();
-			// this.getFaceInfo();
 			this.getFamily();
 			this.getQiniuToken();
 		},
@@ -302,32 +309,88 @@
 			// 获取年级
 			getGrade() {
 				var self = this;
-				API.grades(self.currentPage).then((res) => {
+				API.grades(self.current).then((res) => {
 					self.gradeList = res.data;
 				});
 			},
 			// 获取学生列表
-			refresh() {
+			getStudent(cur, list) {
 				var self = this;
-				self.pageSize = 10;
-				API.students(1).then((res) => {
-					self.tableData = res.data;
-					self.totalPage = res.total;
-					self.currentPage = 1;
-				});
-			},
-			getStudent() {
-				var self = this;
-				API.students(self.currentPage)
+				API.students(cur, list)
 					.then((res) => {
 						self.loading = false;
 						self.tableData = res.data;
-						self.totalPage = res.total;
+						self.total = res.total;
 					})
 					.catch((err) => {
 						self.loading = false;
 					});
 			},
+			// 分页
+			currentChange(val) {
+				var self = this;
+				self.current = val;
+				if (self.student) {
+					switch (self.type) {
+						case 1:
+							var number = self.student;
+							self.funSearch(val, self.size, name, number);
+							break;
+						case 2:
+							var name = self.student;
+							self.funSearch(val, self.size, name, number);
+					}
+				} else {
+					self.getStudent(val, self.size)
+				}
+			},
+			// 每页多少条
+			sizeChange(val) {
+				var self = this;
+				self.size = val;
+				if (self.student) {
+					switch (self.type) {
+						case 1:
+							var number = self.student;
+							self.funSearch(1, val, name, number);
+							break;
+						case 2:
+							var name = self.student;
+							self.funSearch(1, val, name, number);
+					}
+				} else {
+					self.getStudent(1, val);
+				}
+				self.current = 1;
+			},
+
+			// 选择搜索方式
+			changeType(val) {
+				var self = this;
+				self.typeDisabled = true;
+				self.student = "";
+			},
+			funSearch(cur, list, name, number) {
+				var self = this;
+				API.searchStudent(cur, list, name, number).then((res) => {
+					self.tableData = res.data;
+					self.total = res.total;
+					self.$message.success("搜索成功！");
+				});
+			},
+			search() {
+				var self = this;
+				self.current = 1;
+				if (self.type == 1) {
+					var number = self.student;
+					self.funSearch(self.current, self.size, name, number);
+				}
+				if (self.type == 2) {
+					var name = self.student;
+					self.funSearch(self.current, self.size, name, number);
+				}
+			},
+
 			getClass(grade_id) {
 				var self = this;
 				API.classes(1, 1000, grade_id).then((res) => {
@@ -361,16 +424,10 @@
 			},
 			newStudent() {
 				var self = this;
-				if (
-					self.form.name &&
-					self.form.number &&
-					self.form.age &&
-					self.grade &&
-					self.form.class_id
-				) {
+				if (self.form.name && self.form.number && self.form.age && self.grade && self.form.class_id) {
 					API.student(self.form).then((res) => {
 						self.$message.success("提交成功");
-						self.getStudent();
+						self.getStudent(self.current, self.size);
 						self.dialogStudent = false;
 						self.grade = "";
 						self.classValue = "";
@@ -381,46 +438,17 @@
 							age: "",
 							class_id: "",
 						};
-						self.currentPage = 1;
 					});
 				} else {
 					self.$message.warning("请补充完整信息");
 				}
 			},
-			// 选择搜索方式
-			changeType(val) {
-				var self = this;
-				self.typeDisabled = true;
-				self.student = "";
-			},
-			search() {
-				var self = this;
-				if (!self.type) {
-					self.$message.error("请先选择搜索方式");
-				} else {
-					if (self.type == 1) {
-						var number = self.student;
-						API.searchNumber(1, self.pageSize, number).then((res) => {
-							self.tableData = res.data;
-							self.totalPage = res.total;
-							self.$message.success("搜索成功！");
-						});
-					}
-					if (self.type == 2) {
-						var name = self.student;
-						API.searchName(1, self.pageSize, name).then((res) => {
-							self.tableData = res.data;
-							self.totalPage = res.total;
-							self.$message.success("搜索成功！");
-						});
-					}
-				}
-			},
+
 			// 操作
 			// 获取家长信息
 			getFamily() {
 				var self = this;
-				API.wxUser(self.currentPage, 10000).then((res) => {
+				API.wxUser(self.current, 10000).then((res) => {
 					self.familyData = res.data;
 					self.list = self.familyData.map((item) => {
 						return {
@@ -453,8 +481,7 @@
 				var self = this;
 				API.bindFamily(self.bindFormFamily).then((res) => {
 					self.$message.success("绑定成功");
-					self.currentPage = 1;
-					self.getStudent();
+					self.getStudent(self.current, self.size);
 					self.bindFormFamily.user_id = "";
 					self.dialogFamily = false;
 					self.familyList = [];
@@ -471,7 +498,6 @@
 			// 编辑学生
 			handleEdit(index, row) {
 				var self = this;
-				// self.getStudent();
 				self.dialogStudent = true;
 				row.sex = Number(row.sex);
 				self.form = row;
@@ -488,18 +514,26 @@
 				API.delStudent(self.id).then((res) => {
 					self.$message.success("删除成功");
 					self.dialogDel = false;
-					self.getStudent();
-					self.currentPage = 1;
+					self.getStudent(self.current, self.size);
 				});
 			},
 			handleFaceLogs(index, row) {
 				var self = this;
 				self.dialogFaceLogs = true;
 				self.log_id = row.id;
+				self.currentLogsPage = 1;
 				API.faceLogs(self.currentLogsPage, 10, self.log_id).then((res) => {
 					self.FaceLogsDate = res.data;
 					self.logsTotalPage = res.total;
-					self.currentLogsPage = 1;
+					self.FaceLogsDate.forEach((item) => {
+						item.timestamp = DATE.formatTime(item.timestamp, "Y-M-D h:m:s");
+					});
+				});
+			},
+			handleLogsCurrentChange(val) {
+				var self = this;
+				API.faceLogs(self.currentLogsPage, 10, self.log_id).then((res) => {
+					self.FaceLogsDate = res.data;
 					self.FaceLogsDate.forEach((item) => {
 						item.timestamp = DATE.formatTime(item.timestamp, "Y-M-D h:m:s");
 					});
@@ -519,7 +553,6 @@
 			},
 			beforeAvatarUpload(file) {
 				var self = this;
-				// self.familyForm.href = file.name;
 				self.fileName = md5(file.name);
 				self.suffix = file.name.substring(file.name.lastIndexOf(".") + 1);
 				self.imgData.key = `tmp_${self.fileName}.${self.suffix}`;
@@ -530,8 +563,7 @@
 					self.familyForm.href = self.old_href;
 					API.studentFace(self.familyForm).then((res) => {
 						self.$message.success("上传成功");
-						self.currentPage = 1;
-						self.getStudent();
+						self.getStudent(self.current, self.size);
 						self.familyForm.href = "";
 						self.dialogFace = false;
 					});
@@ -545,8 +577,7 @@
 				self.familyForm.href = file.url;
 				API.studentFace(self.familyForm).then((res) => {
 					self.$message.success("上传成功");
-					self.currentPage = 1;
-					self.getStudent();
+					self.getStudent(self.current, self.size);
 					self.$refs.upload.clearFiles();
 					self.familyForm.href = "";
 					self.change_href = "";
@@ -573,74 +604,6 @@
 					.then((res) => {
 						self.imgData.token = res.data.uptoken;
 					});
-			},
-
-			// 分页
-			handleCurrentChange(val) {
-				var self = this;
-				self.currentPage = val;
-				if (self.student) {
-					switch (self.type) {
-						case 1:
-							var number = self.student;
-							API.searchNumber(val, self.pageSize, number).then((res) => {
-								self.tableData = res.data;
-								self.totalPage = res.total;
-								self.$message.success("搜索成功！");
-							});
-							break;
-						case 2:
-							var name = self.student;
-							API.searchName(val, self.pageSize, name).then((res) => {
-								self.tableData = res.data;
-								self.totalPage = res.total;
-								self.$message.success("搜索成功！");
-							});
-					}
-				} else {
-					API.students(val, self.pageSize).then((res) => {
-						self.tableData = res.data;
-						self.totalPage = res.total;
-					});
-				}
-			},
-			handleLogsCurrentChange(val) {
-				var self = this;
-				API.faceLogs(self.currentLogsPage, 10, self.log_id).then((res) => {
-					self.FaceLogsDate = res.data;
-					self.FaceLogsDate.forEach((item) => {
-						item.timestamp = DATE.formatTime(item.timestamp, "Y-M-D h:m:s");
-					});
-				});
-			},
-			// 每页多少条
-			handleSizeChange(val) {
-				var self = this;
-				self.pageSize = val;
-				if (self.student) {
-					switch (self.type) {
-						case 1:
-							var number = self.student;
-							API.searchNumber(1, val, number).then((res) => {
-								self.tableData = res.data;
-								self.totalPage = res.total;
-								self.$message.success("搜索成功！");
-							});
-							break;
-						case 2:
-							var name = self.student;
-							API.searchName(1, val, name).then((res) => {
-								self.tableData = res.data;
-								self.totalPage = res.total;
-								self.$message.success("搜索成功！");
-							});
-					}
-				} else {
-					API.students(self.currentPage, val).then((res) => {
-						self.tableData = res.data;
-						self.totalPage = res.total;
-					});
-				}
 			},
 		},
 	};

@@ -13,6 +13,20 @@
           value-format="yyyy-MM-dd">
         </el-date-picker>
       </div>
+      <div class="btn" v-if="username == 'admin'">
+        <span>选择学校：</span>
+        <el-select v-model="school" placeholder="请选择学校" @change="changeSchoolType">
+          <el-option v-for="item in schoolList" :key="item.index" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </div>
+      <div class="btn" v-if="school_id && username == 'admin'">
+        <span style="margin-right: 5px">
+          <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
+        </span>
+        <span>
+          <el-tag type="info" effect="dark">下班时间: {{off_work}}</el-tag>
+        </span>
+      </div>
       <div class="btn" v-if="username != 'admin'">
         <span>设置上下班时间: </span>
         <el-time-select placeholder="请选择上班时间" v-model="up_time" @change="changeUp" :picker-options="{
@@ -35,20 +49,7 @@
       <div class="btn">
         <el-button type="primary" size="medium" icon="el-icon-download" @click="exportData">批量导出数据</el-button>
       </div>
-      <div class="btn" v-if="username == 'admin'">
-        <span>选择学校：</span>
-        <el-select v-model="school" placeholder="请选择学校" @change="changeSchoolType">
-          <el-option v-for="item in schoolList" :key="item.index" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </div>
-      <div class="btn" v-if="school_id && username == 'admin'">
-        <span style="margin-right: 5px">
-          <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
-        </span>
-        <span>
-          <el-tag type="info" effect="dark">下班时间: {{off_work}}</el-tag>
-        </span>
-      </div>
+
       <div class="btn" v-if="username != 'admin'">
         <span style="margin-right: 5px">
           <el-tag type="info" effect="dark">上班时间: {{on_work}}</el-tag>
@@ -221,9 +222,9 @@
       };
     },
     mounted() {
-      this.getSign();
+      this.getSign(this.current, this.size);
       if (this.username != 'admin') {
-        this.getOneScl();
+        this.funcOneScl();
       } else {
         this.getSchool();
       }
@@ -233,14 +234,12 @@
       getSchool() {
         var self = this;
         API.schools(1, 20).then(res => {
-          console.log(res);
           self.schoolList = res.data;
         })
       },
-      changeSchoolType(val) {
+      funcScl(cur, list, school_id) {
         var self = this;
-        self.school_id = val;
-        API.signScl(self.current, self.size, self.school_id).then(res => {
+        API.signScl(cur, list, school_id).then(res => {
             self.loading = false;
             self.tableDate = res.data;
             self.total = res.total;
@@ -248,23 +247,25 @@
           .catch((err) => {
             self.loading = false;
           });
-        API.oneSchool(self.school_id).then(res => {
-          console.log(res);
+      },
+      // 获取学校
+      funcOneScl(school_id) {
+        var self = this;
+        API.oneSchool(school_id).then(res => {
           self.on_work = res.up_time;
           self.off_work = res.below_time;
         })
       },
-      // 获取单个学校
-      getOneScl() {
+      changeSchoolType(val) {
         var self = this;
-        API.oneSchool().then(res => {
-          self.on_work = res.up_time;
-          self.off_work = res.below_time;
-        })
+        self.school_id = val;
+        self.current = 1;
+        self.funcScl(self.current, self.size, self.school_id);
+        self.funcOneScl(self.school_id);
       },
-      getSign() {
+      getSign(page, limit, name, start, end) {
         var self = this;
-        API.sign(self.current, self.size)
+        API.sign(page, limit, name, start, end)
           .then((res) => {
             self.loading = false;
             self.tableDate = res.data;
@@ -279,42 +280,13 @@
         self.loading = true;
         self.current = val;
         if (self.name) {
-          API.sign(val, self.size, self.name)
-            .then((res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.getSign(val, self.size, self.name);
         } else if (self.time) {
-          API.sign(val, self.size, self.name, self.start, self.end).then(
-            (res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            }
-          );
+          self.getSign(val, self.size, self.name, self.start, self.end);
         } else if (self.school_id) {
-          API.signScl(val, self.size, self.school_id).then(res => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.funcScl(val, self.size, self.school_id);
         } else {
-          API.sign(val, self.size)
-            .then((res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.getSign(val, self.size);
         }
       },
       sizeChange(val) {
@@ -322,43 +294,15 @@
         self.loading = true;
         self.size = val;
         if (self.name) {
-          API.sign(self.current, val, self.name)
-            .then((res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.getSign(1, val, self.name);
         } else if (self.time) {
-          API.sign(self.current, val, self.name, self.start, self.end).then(
-            (res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            }
-          );
+          self.getSign(1, val, self.name, self.start, self.end);
         } else if (self.school_id) {
-          API.signScl(self.current, val, self.school_id).then(res => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.funcScl(1, val, self.school_id);
         } else {
-          API.sign(self.current, val)
-            .then((res) => {
-              self.loading = false;
-              self.tableDate = res.data;
-              self.total = res.total;
-            })
-            .catch((err) => {
-              self.loading = false;
-            });
+          self.getSign(1, val);
         }
+        self.current = 1;
       },
 
       handleSelectionChange(val) {
@@ -374,7 +318,6 @@
         var self = this;
         if (self.idList.length > 0) {
           API.exportSign(self.idList).then(res => {
-            console.log('导出数据res', res);
             window.open(res.request.responseURL);
             this.reload();
           })
@@ -389,16 +332,7 @@
         self.school_id = '';
         self.school = '';
         self.current = 1;
-        API.sign(self.current, self.size, self.name)
-          .then((res) => {
-            self.$message.success("搜索成功");
-            self.loading = false;
-            self.tableDate = res.data;
-            self.total = res.total;
-          })
-          .catch((err) => {
-            self.loading = false;
-          });
+        self.getSign(self.current, self.size, self.name);
       },
 
       timeChange(value) {
@@ -408,13 +342,17 @@
         self.start = value[0];
         self.end = value[1];
         self.loading = true;
-        API.sign(self.current, self.size, self.name, self.start, self.end).then(
-          (res) => {
-            self.loading = false;
-            self.tableDate = res.data;
-            self.total = res.total;
-          }
-        );
+        self.current = 1;
+        self.getSign(self.current, self.size, self.name, self.start, self.end);
+      },
+
+      funcSigns(page, limit, user_id, type, status, start, end) {
+        var self = this;
+        API.signs(page, limit, user_id, type, status, start, end).then((res) => {
+          self.$message.success("获取数据成功");
+          self.detailData = res.data;
+          self.detailsTotal = res.total
+        });
       },
 
       handleDetail(index, row) {
@@ -429,48 +367,22 @@
         self.detailsCurrent = 1;
         self.start1 = '';
         self.end1 = '';
-        API.signs(self.detailsCurrent, self.detailsSize, self.user_id).then((res) => {
-          self.$message.success("获取数据成功");
-          self.detailData = res.data;
-          self.detailsTotal = res.total
-        });
+        self.funcSigns(self.detailsCurrent, self.detailsSize, self.user_id);
       },
       changeAudit(val) {
         var self = this;
         self.type = val;
         self.detailsCurrent = 1;
-        API.signs(
-          self.detailsCurrent,
-          self.detailsSize,
-          self.user_id,
-          self.type,
-          self.status,
-          self.start1,
-          self.end1
-        ).then((res) => {
-          self.$message.success("获取数据成功");
-          self.detailData = res.data;
-          self.detailsTotal = res.total
-        });
+        self.funcSigns(self.detailsCurrent, self.detailsSize, self.user_id, self.type, self.status, self.start1, self
+          .end1);
       },
 
       changeTime(val) {
         var self = this;
         self.status = val;
         self.detailsCurrent = 1;
-        API.signs(
-          self.detailsCurrent,
-          self.detailsSize,
-          self.user_id,
-          self.type,
-          self.status,
-          self.start1,
-          self.end1
-        ).then((res) => {
-          self.$message.success("获取数据成功");
-          self.detailData = res.data;
-          self.detailsTotal = res.total
-        });
+        self.funcSigns(self.detailsCurrent, self.detailsSize, self.user_id, self.type, self.status, self.start1, self
+          .end1);
       },
 
       timeChange1(value) {
@@ -479,88 +391,34 @@
         self.end1 = value[1];
         self.detailsCurrent = 1;
         if (self.type || self.status) {
-          API.signs(
-            self.detailsCurrent,
-            self.detailsSize,
-            self.user_id,
-            self.type,
-            self.status,
-            self.start1,
-            self.end1
-          ).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(self.detailsCurrent, self.detailsSize, self.user_id, self.type, self.status, self.start1, self
+            .end1);
         } else {
-          API.signsTime(self.detailsCurrent, self.detailsSize, self.user_id, self.start1, self.end1).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(self.detailsCurrent, self.detailsSize, self.user_id, self.start1, self.end1);
         }
       },
       detailsCurrentChange(val) {
         var self = this;
         self.detailsCurrent = val;
         if (self.type || self.status) {
-          API.signs(
-            val,
-            self.detailsSize,
-            self.user_id,
-            self.type,
-            self.status,
-            self.start1,
-            self.end1
-          ).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(val, self.detailsSize, self.user_id, self.type, self.status, self.start1, self.end1);
         } else if (self.start1 || self.end1) {
-          API.signsTime(val, self.detailsSize, self.user_id, self.start1, self.end1).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(val, self.detailsSize, self.user_id, self.start1, self.end1);
         } else {
-          API.signs(val, self.detailsSize, self.user_id).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(val, self.detailsSize, self.user_id);
         }
       },
       detailsSizeChange(val) {
         var self = this;
         self.detailsSize = val;
         if (self.type || self.status) {
-          API.signs(
-            self.detailsCurrent,
-            val,
-            self.user_id,
-            self.type,
-            self.status,
-            self.start1,
-            self.end1
-          ).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(1, val, self.user_id, self.type, self.status, self.start1, self.end1);
         } else if (self.start1 || self.end1) {
-          API.signsTime(self.detailsCurrent, val, self.user_id, self.start1, self.end1).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(1, val, self.user_id, self.start1, self.end1);
         } else {
-          API.signs(self.detailsCurrent, val, self.user_id).then((res) => {
-            self.$message.success("获取数据成功");
-            self.detailData = res.data;
-            self.detailsTotal = res.total
-          });
+          self.funcSigns(1, val, self.user_id);
         }
+        self.detailsSize = 1;
       },
 
       changeUp(val) {
