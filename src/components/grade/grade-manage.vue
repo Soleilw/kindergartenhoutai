@@ -43,9 +43,9 @@
     </el-dialog>
 
     <div class="block">
-      <el-pagination @current-change="handleCurrentChange" :current-page.sync="current"
+      <el-pagination @current-change="currentChange" :current-page.sync="current"
         :page-sizes="[10, 20, 30, 40, 50]" :page-size="size" layout="sizes, prev, pager, next, jumper" :total="total"
-        @size-change="handleSizeChange"></el-pagination>
+        @size-change="sizeChange"></el-pagination>
     </div>
   </div>
 </template>
@@ -155,13 +155,14 @@
           });
       },
       // 分页
-      handleCurrentChange(val) {
+      currentChange(val) {
         var self = this;
         self.loading = true;
+        self.current = val;
         self.getGrade(val);
       },
       // 每页多少条
-      handleSizeChange(val) {
+      sizeChange(val) {
         var self = this;
         self.size = val;
         self.getGrade(1, val);
@@ -203,8 +204,6 @@
           })
           .catch((err) => {});
       },
-
-
     },
   };
 </script>
