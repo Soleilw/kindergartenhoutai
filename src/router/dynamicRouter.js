@@ -146,6 +146,15 @@ const dynamicRouter = [{
         ]
     },
     {
+		path: '/switch',
+		name: 'switch',
+		component: () => import('@/views/switch/index'),
+		meta: {
+            title: '人脸开关管理',
+            icon: 'el-icon-key',
+        }
+	},
+    {
         path: '/permission',
         name: 'permission',
         component: () => import('@/views/permission/permission.vue'),

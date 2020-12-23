@@ -620,4 +620,21 @@ API.exportSign = function (id) {
 	})
 }
 
+// 获取开关
+API.getConfigs = function () {
+	return axios.get(url.Configs)
+}
+
+// 删除开关
+API.delFaceSwitch = function (id) {
+	return axios.del(url.Configs, {
+		id: id
+	})
+}
+
+// 添加开关
+API.faceSwitch = function (data) {
+	return axios.post(url.Configs, data)
+}
+
 export default API

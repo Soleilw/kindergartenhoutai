@@ -112,6 +112,8 @@ const url = {
 	'Sign': BaseURL + '/sign/statistics', // 获取签到列表
 	'Signs': BaseURL + '/signs', // 签到详情列表
 	'ExportSign': BaseURL + '/sign/export', // 导出
+	'Configs': BaseURL + '/configs', //  开关配置
+
 }
 
 module.exports = url;

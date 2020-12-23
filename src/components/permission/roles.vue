@@ -445,6 +445,7 @@ export default {
         "manageDel",
         "manageResetPwd", // 重置密码
         "attendanceSystem",
+        "switch"
       ],
       schoolPerson: [
         "announcement", // 公告管理
