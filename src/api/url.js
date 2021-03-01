@@ -114,6 +114,8 @@ const url = {
 	'ExportSign': BaseURL + '/sign/export', // 导出
 	'Configs': BaseURL + '/configs', //  开关配置
 
+	'PushFace': BaseURL + '/push/face', //  开关配置
+
 }
 
 module.exports = url;

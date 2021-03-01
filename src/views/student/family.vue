@@ -44,6 +44,10 @@
                 <el-button size="mini" type="primary" @click="handleFace(scope.$index, scope.row)">更换人脸</el-button>
               </el-dropdown-item>
               <el-dropdown-item>
+                <el-button size="mini" type="primary" @click="handlePushFace(scope.$index, scope.row)">推送人脸
+                </el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
                 <el-button size="mini" type="primary" v-if="scope.row.master != 1"
                   @click="handleFamilyChange(scope.$index, scope.row)">更换默认家长</el-button>
               </el-dropdown-item>
@@ -157,6 +161,14 @@
         </el-form>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="dialogPushFace" title="推送人脸" width="20%" align="center" :close-on-click-modal="false">
+      <div style="font-size: 20px; margin-bottom: 30px">是否推送该用户人脸</div>
+      <span>
+        <el-button type="primary" @click="toPushFace">确定</el-button>
+        <el-button type="danger" @click="dialogPushFace = false">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -206,6 +218,8 @@
         hasNewImage: false,
         new_file: "",
         dialogFace: false,
+        dialogPushFace: false,
+        push_id: ''
       };
     },
     mounted() {
@@ -321,6 +335,33 @@
         self.dialogFace = true;
         self.familyForm.user_id = row.user_id;
         self.old_href = row.UserInfo.href;
+      },
+
+      handlePushFace(index, row) {
+        var self = this;
+        self.dialogPushFace = true;
+        console.log(row);
+        self.push_id = row.user_id;
+      },
+
+
+      toPushFace() {
+        var self = this;
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        API.pushFace(self.push_id)
+          .then((res) => {
+            loading.close();
+            self.dialogPushFace = false;
+            self.$message.success("推送成功");
+          })
+          .catch((err) => {
+            loading.close();
+          });
       },
 
       // 人脸信息

@@ -637,4 +637,10 @@ API.faceSwitch = function (data) {
 	return axios.post(url.Configs, data)
 }
 
+API.pushFace = function (user_id) {
+	return axios.post(url.PushFace, {
+		user_id: user_id
+	})
+}
+
 export default API
