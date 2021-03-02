@@ -227,9 +227,9 @@
     },
     methods: {
       // 获取家长
-      getFamily(cur, list) {
+      getFamily(cur, list, number) {
         var self = this;
-        API.family(cur, list)
+        API.family(cur, list, number)
           .then((res) => {
             self.loading = false;
             self.tableData = res.data;
@@ -245,7 +245,7 @@
         self.loading = true;
         self.current = val;
         if (self.number) {
-          self.fucSearch(val, self.size, self.number);
+          self.getFamily(val, self.size, self.number);
         } else {
           self.getFamily(val, self.size);
         }
@@ -254,31 +254,22 @@
       sizeChange(val) {
         var self = this;
         self.size = val;
+        self.loading = true;
         if (self.number) {
-          self.fucSearch(1, val, self.number);
+          self.getFamily(1, val, self.number);
         } else {
           self.getFamily(1, val);
         }
         self.current = 1;
       },
-      fucSearch(cur, list, number) {
-        var self = this;
-        API.familySearch(cur, list, number).then((res) => {
-          self.loading = false;
-          self.$message.success("搜索成功！");
-          self.tableData = res.data;
-          self.total = res.total;
-        }).catch((err) => {
-          self.loading = false;
-        });
-      },
+
       // 搜索
       search() {
         var self = this;
         self.current = 1;
         self.loading = true;
         if (self.number) {
-          self.fucSearch(self.current, self.size, self.number);
+          self.getFamily(self.current, self.size, self.number);
         }
       },
 

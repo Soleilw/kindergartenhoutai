@@ -48,14 +48,6 @@ API.bindFamily = function (data) {
 	return axios.post(url.BindFamily, data)
 }
 
-// 搜索家长
-API.familySearch = function (page, limit, number) {
-	return axios.get(url.FamilySearch, {
-		page: page,
-		limit: limit,
-		number: number
-	})
-}
 
 // 更换人脸
 API.studentFace = function (data) {
@@ -130,10 +122,11 @@ API.devices = function (page) {
 }
 
 // 获取家长
-API.family = function (page, limit) {
+API.family = function (page, limit, number) {
 	return axios.get(url.Family, {
 		page: page,
-		limit: limit
+		limit: limit,
+		number: number
 	})
 }
 

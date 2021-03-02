@@ -56,7 +56,7 @@ const url = {
 	'BindFamily': BaseURL + '/pass/student', // 绑定家长
 	'StudentFace': BaseURL + '/student/face', // 更换人脸
 	'StudentEditFace': BaseURL + '/student/editFace', // 手动更换人脸
-	'FamilySearch': BaseURL + '/parents', // 家长列表搜索学生
+	// 'FamilySearch': BaseURL + '/parents', // 家长列表搜索学生
 	'StudentFaceLogs': BaseURL + '/student/face/logs', // 学生进出记录
 	'UpdateFace': BaseURL + '/update/face', // 更换家长人脸
 
